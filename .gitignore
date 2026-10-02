@@ -1,0 +1,32 @@
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node.js
+node_modules/
+dist/
+build/
+
+# Local databases and generated data
+database/data/
+*.sqlite3
+*.db
+*.mp4
+*.mov
+*.mkv
+*.avi
+
+# Editor and OS files
+.DS_Store
+.vscode/
