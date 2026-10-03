@@ -45,6 +45,27 @@ Install Git, Python 3, Node.js/npm, Docker Desktop with Docker Compose, and an e
 
 The Compose database volume is local development data and is not committed. `docker compose down` preserves it; add `--volumes` only when you intend to discard local database data. The health endpoint runs `SELECT 1` against PostgreSQL; it does not create application tables.
 
+## Phase 2 database setup
+
+Apply the schema migration and load the repeatable fictional demo dataset:
+
+```sh
+docker compose exec backend alembic upgrade head
+docker compose exec backend python seed_demo.py
+docker compose exec backend python -m pytest
+```
+
+The migration creates the team, player, current availability, match, match-player, and match-event tables. The seed script can be run again without duplicating its demo records. The tests use a temporary in-memory database; the commands above use PostgreSQL for the migration, seed, and live API checks.
+
+Available read-only endpoints include:
+
+- `GET /api/teams` and `GET /api/teams/{team_id}`
+- `GET /api/players?team_id=...` and `GET /api/players/{player_id}`
+- `GET /api/availability?status=...&team_id=...` and `GET /api/players/{player_id}/availability`
+- `GET /api/matches?team_id=...` and `GET /api/matches/{match_id}`
+
+Collection responses label the records as fictional demo data. Match participants include the team they represented in that match; the seed process checks that this team is the match's home or away team.
+
 ## Phase documents
 
 - `AI_Tactical_Match_Breaker_Project_Blueprint.md` describes the product vision and phases.
