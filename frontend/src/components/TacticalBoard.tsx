@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
+import TacticalAnalysis from "./TacticalAnalysis";
+import { calculateTeamMetrics, calculateZoneOccupancy } from "../analysis/tacticalMetrics";
 import type { AvailabilityStatus, FormationName, FormationSlot, PitchPosition, Player, PlayerPositions, Side, Team } from "../types";
 
 type PlayerResponse = { items: Player[]; count: number };
@@ -344,6 +346,7 @@ export default function TacticalBoard({ teams }: { teams: Team[] }) {
   const [squads, setSquads] = useState<Squad>({ home: [], away: [] });
   const [assignments, setAssignments] = useState<Assignments>({ home: {}, away: {} });
   const [playerPositions, setPlayerPositions] = useState<PlayerPositions>({ home: {}, away: {} });
+  const [analysisEnabled, setAnalysisEnabled] = useState(true);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const formationRef = useRef(formationBySide);
@@ -451,6 +454,17 @@ export default function TacticalBoard({ teams }: { teams: Team[] }) {
 
   const sides: Side[] = ["home", "away"];
   const placedCounts = sides.map((side) => Object.values(assignments[side]).filter((id) => id !== null).length);
+  const analysis = useMemo(() => {
+    const homeInput = { side: "home" as const, players: squads.home, positions: playerPositions.home };
+    const awayInput = { side: "away" as const, players: squads.away, positions: playerPositions.away };
+    return {
+      metrics: {
+        home: calculateTeamMetrics(homeInput),
+        away: calculateTeamMetrics(awayInput),
+      },
+      zones: calculateZoneOccupancy(homeInput, awayInput),
+    };
+  }, [squads.home, squads.away, playerPositions.home, playerPositions.away]);
 
   return (
     <>
@@ -519,6 +533,20 @@ export default function TacticalBoard({ teams }: { teams: Team[] }) {
             </div>
             <span className="availability-note-side">PLAYER STATUS IS CURRENT DEMO DATA</span>
           </section>
+          <div className="analysis-toggle-row">
+            <button
+              className="analysis-toggle"
+              type="button"
+              aria-pressed={analysisEnabled}
+              onClick={() => setAnalysisEnabled((enabled) => !enabled)}
+            >
+              <span>Tactical Analysis</span>
+              <strong>{analysisEnabled ? "ON" : "OFF"}</strong>
+            </button>
+          </div>
+          {analysisEnabled && (
+            <TacticalAnalysis teams={selectedTeams} metrics={analysis.metrics} zones={analysis.zones} />
+          )}
         </>
       )}
     </>
