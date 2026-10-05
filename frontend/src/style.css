@@ -257,6 +257,20 @@ h2 { color: #f0f2e8; font-size: 1.45rem; font-weight: 600; }
 .overload-section li { padding: 8px 0; border-bottom: 1px solid rgb(48 55 46 / 65%); }
 .overload-section li span { flex: 0 0 auto; }
 .analysis-footnote { margin: 13px 2px 0; color: #747e6d; font: 400 .53rem/1.6 var(--mono); }
+.tactical-insights { margin-top: 15px; padding: 15px 0 2px; border-top: 1px solid #30372e; }
+.tactical-insights > .analysis-subheading { margin: 0 2px 11px; }
+.insight-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.insight-group { min-width: 0; padding: 12px; border: 1px solid #30372e; border-radius: 3px; background: #151a14; }
+.insight-group > h4 { margin: 0 0 8px; color: #dce4cf; font: 600 .67rem Manrope, sans-serif; }
+.insight-group > ul { display: grid; gap: 7px; margin: 0; padding: 0; list-style: none; }
+.insight-item { padding: 9px; border: 1px solid #333b30; background: #1a2019; }
+.insight-item--notable { border-color: #46513c; }
+.insight-item-heading { display: flex; justify-content: space-between; gap: 8px; color: #929b89; font: 400 .5rem var(--mono); text-transform: uppercase; }
+.insight-prominence { color: #b4c886; }
+.insight-item > strong { display: block; margin-top: 7px; color: #e2e8d8; font-size: .68rem; font-weight: 600; }
+.insight-item > p { margin: 5px 0 7px; color: #a0a898; font-size: .63rem; line-height: 1.5; }
+.insight-item > small { color: #81906e; font: 400 .51rem var(--mono); }
+.insight-empty { margin: 0; padding: 12px; border: 1px solid #30372e; background: #151a14; color: #899382; font-size: .65rem; }
 
 @media (max-width: 900px) {
   .analysis-panel { padding: 17px; }
@@ -264,6 +278,7 @@ h2 { color: #f0f2e8; font-size: 1.45rem; font-weight: 600; }
   .analysis-team-card { padding: 11px; }
   .analysis-metric-list { grid-template-columns: 1fr; }
   .analysis-spatial-grid { grid-template-columns: 1fr; }
+  .insight-groups { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
 }
 
 @media (max-width: 620px) {
@@ -277,4 +292,5 @@ h2 { color: #f0f2e8; font-size: 1.45rem; font-weight: 600; }
   .analysis-metric-list dd { text-align: left; white-space: normal; }
   .analysis-subheading { align-items: start; flex-direction: column; gap: 4px; }
   .analysis-subheading > span { text-align: left; }
+  .insight-groups { grid-template-columns: 1fr; }
 }

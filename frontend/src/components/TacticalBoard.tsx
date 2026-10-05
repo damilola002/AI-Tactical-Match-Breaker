@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import TacticalAnalysis from "./TacticalAnalysis";
 import { calculateTeamMetrics, calculateZoneOccupancy } from "../analysis/tacticalMetrics";
+import { calculateTacticalInsights } from "../analysis/tacticalInsights";
 import type { AvailabilityStatus, FormationName, FormationSlot, PitchPosition, Player, PlayerPositions, Side, Team } from "../types";
 
 type PlayerResponse = { items: Player[]; count: number };
@@ -465,6 +466,11 @@ export default function TacticalBoard({ teams }: { teams: Team[] }) {
       zones: calculateZoneOccupancy(homeInput, awayInput),
     };
   }, [squads.home, squads.away, playerPositions.home, playerPositions.away]);
+  const insights = useMemo(() => calculateTacticalInsights({
+    metrics: analysis.metrics,
+    zones: analysis.zones,
+    teams: { home: selectedTeams.home, away: selectedTeams.away },
+  }), [analysis, selectedTeams.home, selectedTeams.away]);
 
   return (
     <>
@@ -545,7 +551,7 @@ export default function TacticalBoard({ teams }: { teams: Team[] }) {
             </button>
           </div>
           {analysisEnabled && (
-            <TacticalAnalysis teams={selectedTeams} metrics={analysis.metrics} zones={analysis.zones} />
+            <TacticalAnalysis teams={selectedTeams} metrics={analysis.metrics} zones={analysis.zones} insights={insights} />
           )}
         </>
       )}

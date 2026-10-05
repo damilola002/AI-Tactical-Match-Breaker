@@ -1,10 +1,12 @@
 import type { TeamMetrics, ZoneOccupancy } from "../analysis/tacticalMetrics.ts";
+import type { TacticalInsight } from "../analysis/tacticalInsights.ts";
 import type { Team } from "../types.ts";
 
 type Props = {
   teams: Record<"home" | "away", Team>;
   metrics: Record<"home" | "away", TeamMetrics>;
   zones: ZoneOccupancy[];
+  insights: TacticalInsight[];
 };
 
 const lineLabels = [
@@ -54,8 +56,25 @@ function TeamMetricsCard({ name, metrics }: { name: string; metrics: TeamMetrics
   );
 }
 
-export default function TacticalAnalysis({ teams, metrics, zones }: Props) {
+export default function TacticalAnalysis({ teams, metrics, zones, insights }: Props) {
   const overloads = zones.filter((zone) => zone.homeDifference !== 0);
+  const groups = [
+    {
+      key: "home",
+      label: teams.home.name,
+      insights: insights.filter((insight) => insight.category !== "zone_difference" && insight.teamSide === "home"),
+    },
+    {
+      key: "away",
+      label: teams.away.name,
+      insights: insights.filter((insight) => insight.category !== "zone_difference" && insight.teamSide === "away"),
+    },
+    {
+      key: "zones",
+      label: "Shared pitch zones",
+      insights: insights.filter((insight) => insight.category === "zone_difference"),
+    },
+  ].filter((group) => group.insights.length > 0);
   return (
     <section className="analysis-panel" aria-labelledby="analysis-title">
       <div className="analysis-panel-heading">
@@ -104,6 +123,40 @@ export default function TacticalAnalysis({ teams, metrics, zones }: Props) {
           ) : <p>Every occupied zone has equal counts.</p>}
         </section>
       </div>
+      <section className="tactical-insights" aria-labelledby="tactical-insights-title">
+        <div className="analysis-subheading">
+          <h3 id="tactical-insights-title">Tactical Insights</h3>
+          <span>Deterministic observations · {insights.length} total</span>
+        </div>
+        {groups.length === 0 ? (
+          <p className="insight-empty">No observations meet the current Phase 5 rules.</p>
+        ) : (
+          <div className="insight-groups">
+            {groups.map((group) => (
+              <section className="insight-group" key={group.key} aria-label={`${group.label} observations`}>
+                <h4>{group.label}</h4>
+                <ul>
+                  {group.insights.map((insight) => (
+                    <li className={`insight-item insight-item--${insight.severity}`} key={insight.id}>
+                      <div className="insight-item-heading">
+                        <span>{insight.category.replaceAll("_", " ")}</span>
+                        <span className="insight-prominence">{insight.severity}</span>
+                      </div>
+                      <strong>{insight.title}</strong>
+                      <p>{insight.description}</p>
+                      <small>
+                        {insight.relatedMetric.key.replaceAll(/([A-Z])/g, " $1")} · {insight.relatedMetric.unit === "players"
+                          ? insight.relatedMetric.value
+                          : insight.relatedMetric.value.toFixed(1)} {insight.relatedMetric.unit}
+                      </small>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ))}
+          </div>
+        )}
+      </section>
       <p className="analysis-footnote">
         Line depth is measured from each team’s own end toward attack. Zones use shared screen coordinates.
         Unknown player positions are included in spatial metrics but omitted from line metrics.
