@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 
 from sqlalchemy import (
     CheckConstraint,
@@ -6,6 +7,7 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     Integer,
+    Numeric,
     String,
     Text,
     UniqueConstraint,
@@ -125,6 +127,14 @@ class Match(Base):
 class MatchPlayer(Base):
     __tablename__ = "match_players"
     __table_args__ = (
+        CheckConstraint(
+            "distance_covered_meters IS NULL OR distance_covered_meters >= 0",
+            name="ck_match_players_distance_nonnegative",
+        ),
+        CheckConstraint(
+            "sprint_count IS NULL OR sprint_count >= 0",
+            name="ck_match_players_sprint_count_nonnegative",
+        ),
         Index("ix_match_players_player_id", "player_id"),
     )
 
@@ -137,6 +147,8 @@ class MatchPlayer(Base):
     team_id: Mapped[int] = mapped_column(
         ForeignKey("teams.id", ondelete="RESTRICT"), nullable=False
     )
+    distance_covered_meters: Mapped[Decimal | None] = mapped_column(Numeric(8, 2), nullable=True)
+    sprint_count: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     match: Mapped[Match] = relationship(back_populates="players")
     player: Mapped[Player] = relationship(back_populates="match_participations")

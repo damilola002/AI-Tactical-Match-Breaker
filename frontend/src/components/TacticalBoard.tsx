@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import TacticalAnalysis from "./TacticalAnalysis";
+import HistoricalAnalytics from "./HistoricalAnalytics";
 import TeamConnectionLines from "./TeamConnectionLines";
 import { calculateTeamMetrics, calculateZoneOccupancy } from "../analysis/tacticalMetrics";
 import { calculateTacticalInsights } from "../analysis/tacticalInsights";
@@ -673,6 +674,7 @@ export default function TacticalBoard({ teams }: { teams: Team[] }) {
           {analysisEnabled && (
             <TacticalAnalysis teams={selectedTeams} metrics={analysis.metrics} zones={analysis.zones} insights={insights} />
           )}
+          <HistoricalAnalytics team={selectedTeams.home} />
         </>
       )}
     </>

@@ -4,9 +4,11 @@ import psycopg
 from fastapi import FastAPI, HTTPException
 
 from app.routes import router as data_router
+from app.analytics_routes import router as analytics_router
 
 app = FastAPI(title="AI Tactical Match-Breaker API")
 app.include_router(data_router)
+app.include_router(analytics_router)
 
 
 @app.get("/api/health")

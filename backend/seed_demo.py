@@ -1,6 +1,7 @@
-"""Insert or refresh a small, fictional demo dataset without duplicating it."""
+"""Insert or refresh a fictional three-team demo dataset idempotently."""
 
 from datetime import UTC, datetime
+from decimal import Decimal
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -28,11 +29,27 @@ TEAM_FIXTURES = (
             ("Sora Bell", "Forward", "active"),
         ),
     },
+    {
+        "name": "Morrowfield Athletic",
+        "players": (
+            ("Jules North", "Goalkeeper", "active"),
+            ("Mika Rell", "Defender", "active"),
+            ("Oren Ash", "Midfielder", "active"),
+            ("Leni Shore", "Forward", "doubtful"),
+        ),
+    },
 )
 
-MATCH_KICKOFF = datetime(2026, 9, 20, 15, 0, tzinfo=UTC)
-MATCH_SCORE = (2, 1)
-MATCH_EVENTS = (
+MATCH_FIXTURES = (
+    ("Aster Vale FC", "Cedar Bay United", datetime(2026, 9, 20, 15, tzinfo=UTC), 2, 1),
+    ("Cedar Bay United", "Aster Vale FC", datetime(2026, 10, 4, 15, tzinfo=UTC), 1, 1),
+    ("Cedar Bay United", "Morrowfield Athletic", datetime(2026, 9, 22, 15, tzinfo=UTC), 3, 0),
+    ("Morrowfield Athletic", "Cedar Bay United", datetime(2026, 10, 6, 15, tzinfo=UTC), 1, 2),
+    ("Morrowfield Athletic", "Aster Vale FC", datetime(2026, 9, 24, 15, tzinfo=UTC), 0, 2),
+    ("Aster Vale FC", "Morrowfield Athletic", datetime(2026, 10, 8, 15, tzinfo=UTC), 1, 3),
+)
+
+LEGACY_MATCH_EVENTS = (
     (18 * 60 + 12, "goal", "Aster Vale FC scores in this fictional demo match."),
     (54 * 60 + 5, "goal", "Cedar Bay United scores in this fictional demo match."),
     (78 * 60 + 41, "goal", "Aster Vale FC scores the deciding fictional demo goal."),
@@ -60,7 +77,6 @@ def get_or_create_player(
         session.flush()
     else:
         player.position = position
-
     if player.availability is None:
         session.add(PlayerAvailability(player_id=player.id, status=status))
     elif player.availability.status != status:
@@ -69,80 +85,85 @@ def get_or_create_player(
     return player
 
 
-def seed_demo_data(session: Session) -> None:
-    teams: list[Team] = []
-    team_players: list[list[Player]] = []
+def _measurement(team_index: int, player_index: int, fixture_index: int) -> tuple[Decimal | None, int | None]:
+    # Fictional, stable sample data. The first player's first distance is a
+    # measured zero; one appearance deliberately lacks measurements.
+    if team_index == 2 and player_index == 3 and fixture_index == 5:
+        return None, None
+    distance = Decimal("0.00") if team_index == 0 and player_index == 0 and fixture_index == 0 else Decimal(8500 + team_index * 170 + player_index * 95 + fixture_index * 12)
+    sprints = (team_index * 3 + player_index + fixture_index) % 14
+    return distance, sprints
 
+
+def seed_demo_data(session: Session) -> None:
+    teams_by_name: dict[str, Team] = {}
+    players_by_team: dict[str, list[Player]] = {}
     for team_fixture in TEAM_FIXTURES:
         team = get_or_create_team(session, team_fixture["name"])
-        players = [
+        teams_by_name[team.name] = team
+        players_by_team[team.name] = [
             get_or_create_player(session, team, name, position, status)
             for name, position, status in team_fixture["players"]
         ]
-        teams.append(team)
-        team_players.append(players)
 
-    home_team, away_team = teams
-    match = session.scalar(
-        select(Match).where(
-            Match.kickoff_at == MATCH_KICKOFF,
-            Match.home_team_id == home_team.id,
-            Match.away_team_id == away_team.id,
-        )
-    )
-    if match is None:
-        match = Match(
-            kickoff_at=MATCH_KICKOFF,
-            home_team=home_team,
-            away_team=away_team,
-            home_score=MATCH_SCORE[0],
-            away_score=MATCH_SCORE[1],
-        )
-        session.add(match)
-        session.flush()
-    else:
-        match.home_score, match.away_score = MATCH_SCORE
-
-    for team, players in zip(teams, team_players, strict=True):
-        validate_match_player_team(match, team.id)
-        for player in players:
-            participant = session.get(MatchPlayer, (match.id, player.id))
-            if participant is None:
-                session.add(
-                    MatchPlayer(match_id=match.id, player_id=player.id, team_id=team.id)
-                )
-            else:
-                participant.team_id = team.id
-
-    for occurred_at_seconds, event_type, description in MATCH_EVENTS:
-        event = session.scalar(
-            select(MatchEvent).where(
-                MatchEvent.match_id == match.id,
-                MatchEvent.occurred_at_seconds == occurred_at_seconds,
-                MatchEvent.event_type == event_type,
+    team_indexes = {fixture["name"]: index for index, fixture in enumerate(TEAM_FIXTURES)}
+    for fixture_index, fixture in enumerate(MATCH_FIXTURES):
+        home_name, away_name, kickoff, home_score, away_score = fixture
+        home_team, away_team = teams_by_name[home_name], teams_by_name[away_name]
+        match = session.scalar(
+            select(Match).where(
+                Match.kickoff_at == kickoff,
+                Match.home_team_id == home_team.id,
+                Match.away_team_id == away_team.id,
             )
         )
-        if event is None:
-            session.add(
-                MatchEvent(
-                    match_id=match.id,
-                    occurred_at_seconds=occurred_at_seconds,
-                    event_type=event_type,
-                    description=description,
-                )
+        if match is None:
+            match = Match(
+                kickoff_at=kickoff, home_team=home_team, away_team=away_team,
+                home_score=home_score, away_score=away_score,
             )
+            session.add(match)
+            session.flush()
         else:
-            event.description = description
+            match.home_score, match.away_score = home_score, away_score
+
+        if fixture_index == 0:
+            for occurred_at_seconds, event_type, description in LEGACY_MATCH_EVENTS:
+                event = session.scalar(
+                    select(MatchEvent).where(
+                        MatchEvent.match_id == match.id,
+                        MatchEvent.occurred_at_seconds == occurred_at_seconds,
+                        MatchEvent.event_type == event_type,
+                    )
+                )
+                if event is None:
+                    session.add(MatchEvent(
+                        match_id=match.id, occurred_at_seconds=occurred_at_seconds,
+                        event_type=event_type, description=description,
+                    ))
+                else:
+                    event.description = description
+
+        for team in (home_team, away_team):
+            team_index = team_indexes[team.name]
+            validate_match_player_team(match, team.id)
+            for player_index, player in enumerate(players_by_team[team.name]):
+                participant = session.get(MatchPlayer, (match.id, player.id))
+                distance, sprints = _measurement(team_index, player_index, fixture_index)
+                if participant is None:
+                    participant = MatchPlayer(match_id=match.id, player_id=player.id, team_id=team.id)
+                    session.add(participant)
+                participant.team_id = team.id
+                participant.distance_covered_meters = distance
+                participant.sprint_count = sprints
 
 
 def main() -> None:
     if SessionLocal is None:
         raise RuntimeError("DATABASE_URL must be set before seeding demo data")
-
     with SessionLocal() as session:
         seed_demo_data(session)
         session.commit()
-
     print("Fictional demo data seeded (safe to run again).")
 
 
