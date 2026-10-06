@@ -102,14 +102,25 @@ h1 em { color: var(--lime); font-style: normal; font-weight: 500; }
 .pitch-kicker { margin: 0 0 4px; color: #99b54d; font-size: .57rem; }
 h2 { color: #f0f2e8; font-size: 1.45rem; font-weight: 600; }
 .pitch-instructions { margin: 7px 0 0; color: #7f8978; font: 400 .52rem var(--mono); letter-spacing: .035em; }
+.pitch-tools { display: flex; flex-direction: column; align-items: flex-end; gap: 9px; }
 .pitch-key { display: flex; gap: 19px; padding-bottom: 3px; }
 .pitch-key span { display: inline-flex; align-items: center; gap: 7px; color: #a6ac9d; font-size: .68rem; }
 .key-dot { width: 8px; height: 8px; display: inline-block; border-radius: 50%; }
 .key-dot--home { background: #d2ed62; }
 .key-dot--away { background: #69c9b4; }
+.position-lock-toggle { display: grid; grid-template-columns: auto auto; align-items: center; gap: 2px 10px; padding: 7px 10px; border: 1px solid #48513e; border-radius: 3px; background: #1b2219; color: #a6ad9c; text-align: left; cursor: pointer; }
+.position-lock-toggle > span { font-size: .62rem; font-weight: 600; }
+.position-lock-toggle > strong { color: #b3bd9e; font: 600 .56rem var(--mono); text-align: right; }
+.position-lock-toggle > small { grid-column: 1 / -1; color: #798373; font: 400 .48rem var(--mono); }
+.position-lock-toggle.is-locked { border-color: #81964c; background: #252e1c; color: #e2e9d5; }
+.position-lock-toggle.is-locked > strong { color: #d2ed62; }
 .pitch-wrap { overflow: hidden; padding: 12px; border: 1px solid #4e6445; border-radius: 4px; background: #314e35; }
 .pitch { position: relative; min-height: 620px; overflow: hidden; isolation: isolate; background: repeating-linear-gradient(90deg, #2c5035 0, #2c5035 10%, #31583a 10%, #31583a 20%); }
 .pitch-lines { position: absolute; inset: 0; z-index: -1; }
+.pitch-connection-lines { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.pitch-connection-line { fill: none; stroke-width: .62; stroke-linecap: round; opacity: .72; vector-effect: non-scaling-stroke; }
+.pitch-connection-line--home { stroke: #d2ed62; }
+.pitch-connection-line--away { stroke: #69c9b4; }
 .pitch-boundary { position: absolute; inset: 2.6%; border: 1px solid rgb(219 235 202 / 53%); }
 .pitch-halfway { position: absolute; top: 2.6%; bottom: 2.6%; left: 50%; border-left: 1px solid rgb(219 235 202 / 53%); }
 .pitch-center-circle { position: absolute; top: 50%; left: 50%; width: 15%; aspect-ratio: 1; transform: translate(-50%, -50%); border: 1px solid rgb(219 235 202 / 53%); border-radius: 50%; }
@@ -198,6 +209,7 @@ h2 { color: #f0f2e8; font-size: 1.45rem; font-weight: 600; }
   .team-panel { padding: 15px; }
   .pitch-section { padding: 17px 12px 14px; }
   .pitch-heading { align-items: start; gap: 12px; }
+  .pitch-tools { align-items: flex-end; }
   .pitch-key { flex-direction: column; gap: 6px; }
   .pitch-key span { font-size: .58rem; }
   .pitch-wrap { padding: 5px; }

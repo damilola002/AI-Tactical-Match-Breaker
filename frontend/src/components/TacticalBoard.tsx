@@ -1,8 +1,16 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { PointerEvent as ReactPointerEvent } from "react";
 import TacticalAnalysis from "./TacticalAnalysis";
+import TeamConnectionLines from "./TeamConnectionLines";
 import { calculateTeamMetrics, calculateZoneOccupancy } from "../analysis/tacticalMetrics";
 import { calculateTacticalInsights } from "../analysis/tacticalInsights";
+import { buildTeamConnections } from "../analysis/teamConnections";
+import {
+  constrainPlayerPosition,
+  getPitchDragBounds,
+  NORMALIZED_PITCH_BOUNDS,
+} from "../analysis/positionConstraints";
+import type { PitchPositionBounds } from "../analysis/positionConstraints";
 import type { AvailabilityStatus, FormationName, FormationSlot, PitchPosition, Player, PlayerPositions, Side, Team } from "../types";
 
 type PlayerResponse = { items: Player[]; count: number };
@@ -88,6 +96,40 @@ function defaultPositions(
   );
 }
 
+function constrainPositionsForSide(
+  side: Side,
+  positions: Record<number, PitchPosition>,
+  players: Player[],
+  positionLock: boolean,
+  bounds: PitchPositionBounds,
+): Record<number, PitchPosition> {
+  if (!positionLock) return positions;
+  const playersById = new Map(players.map((player) => [player.id, player]));
+  return Object.fromEntries(Object.entries(positions).map(([playerIdText, position]) => {
+    const playerId = Number(playerIdText);
+    const player = playersById.get(playerId);
+    const constrained = constrainPlayerPosition({
+      side,
+      role: player?.position,
+      position,
+      positionLock: true,
+      bounds,
+    });
+    return [playerId, constrained ?? position];
+  }));
+}
+
+function assignedPositions(
+  side: Side,
+  slots: FormationSlot[],
+  assignments: Record<number, number | null>,
+  players: Player[],
+  positionLock: boolean,
+  bounds: PitchPositionBounds,
+): Record<number, PitchPosition> {
+  return constrainPositionsForSide(side, defaultPositions(side, slots, assignments), players, positionLock, bounds);
+}
+
 function Pitch({
   squads,
   teams,
@@ -95,13 +137,15 @@ function Pitch({
   assignments,
   playerPositions,
   onPlayerMove,
+  onPitchBoundsChange,
 }: {
   squads: Squad;
   teams: Record<Side, Team>;
   formationBySide: Record<Side, FormationName>;
   assignments: Assignments;
   playerPositions: PlayerPositions;
-  onPlayerMove: (side: Side, playerId: number, position: PitchPosition) => void;
+  onPlayerMove: (side: Side, playerId: number, position: PitchPosition, bounds: ReturnType<typeof getPitchDragBounds>) => void;
+  onPitchBoundsChange: (bounds: PitchPositionBounds) => void;
 }) {
   const sides: Side[] = ["home", "away"];
   const pitchRef = useRef<HTMLDivElement>(null);
@@ -111,17 +155,27 @@ function Pitch({
     away: new Map(squads.away.map((player) => [player.id, player])),
   };
 
+  useLayoutEffect(() => {
+    const pitch = pitchRef.current;
+    if (!pitch) return;
+    const updateBounds = () => {
+      const rect = pitch.getBoundingClientRect();
+      onPitchBoundsChange(getPitchDragBounds(rect.width, rect.height));
+    };
+    updateBounds();
+    const observer = new ResizeObserver(updateBounds);
+    observer.observe(pitch);
+    return () => observer.disconnect();
+  }, [onPitchBoundsChange]);
+
   const movePlayer = (side: Side, playerId: number, event: ReactPointerEvent<HTMLButtonElement>) => {
     const pitch = pitchRef.current;
     if (!pitch) return;
     const bounds = pitch.getBoundingClientRect();
-    const halfTokenWidth = 16;
-    const halfTokenHeight = 16;
-    const minX = 2.6 + (halfTokenWidth / bounds.width) * 100;
-    const minY = 2.6 + (halfTokenHeight / bounds.height) * 100;
-    const x = Math.min(100 - minX, Math.max(minX, ((event.clientX - bounds.left) / bounds.width) * 100));
-    const y = Math.min(100 - minY, Math.max(minY, ((event.clientY - bounds.top) / bounds.height) * 100));
-    onPlayerMove(side, playerId, { x, y });
+    const positionBounds = getPitchDragBounds(bounds.width, bounds.height);
+    const x = Math.min(positionBounds.maxX, Math.max(positionBounds.minX, ((event.clientX - bounds.left) / bounds.width) * 100));
+    const y = Math.min(positionBounds.maxY, Math.max(positionBounds.minY, ((event.clientY - bounds.top) / bounds.height) * 100));
+    onPlayerMove(side, playerId, { x, y }, positionBounds);
   };
 
   const beginDrag = (side: Side, playerId: number, event: ReactPointerEvent<HTMLButtonElement>) => {
@@ -153,6 +207,11 @@ function Pitch({
           <span className="pitch-corner pitch-corner--bl" />
           <span className="pitch-corner pitch-corner--br" />
         </div>
+        <TeamConnectionLines connections={buildTeamConnections(
+          { home: formations[formationBySide.home], away: formations[formationBySide.away] },
+          assignments,
+          playerPositions,
+        )} />
         {sides.flatMap((side) => {
           const slots = formations[formationBySide[side]];
           const occupiedSlots = assignments[side];
@@ -347,11 +406,17 @@ export default function TacticalBoard({ teams }: { teams: Team[] }) {
   const [squads, setSquads] = useState<Squad>({ home: [], away: [] });
   const [assignments, setAssignments] = useState<Assignments>({ home: {}, away: {} });
   const [playerPositions, setPlayerPositions] = useState<PlayerPositions>({ home: {}, away: {} });
+  const [positionLock, setPositionLock] = useState(false);
+  const [pitchBounds, setPitchBounds] = useState<PitchPositionBounds>(NORMALIZED_PITCH_BOUNDS);
   const [analysisEnabled, setAnalysisEnabled] = useState(true);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
   const formationRef = useRef(formationBySide);
   formationRef.current = formationBySide;
+  const positionLockRef = useRef(positionLock);
+  positionLockRef.current = positionLock;
+  const pitchBoundsRef = useRef(pitchBounds);
+  pitchBoundsRef.current = pitchBounds;
 
   const selectedTeams = useMemo(() => ({
     home: teams.find((team) => team.id === teamIds.home) ?? teams[0],
@@ -379,8 +444,8 @@ export default function TacticalBoard({ teams }: { teams: Team[] }) {
         };
         setAssignments(nextAssignments);
         setPlayerPositions({
-          home: defaultPositions("home", formations[activeFormations.home], nextAssignments.home),
-          away: defaultPositions("away", formations[activeFormations.away], nextAssignments.away),
+          home: assignedPositions("home", formations[activeFormations.home], nextAssignments.home, nextSquads.home, positionLockRef.current, pitchBoundsRef.current),
+          away: assignedPositions("away", formations[activeFormations.away], nextAssignments.away, nextSquads.away, positionLockRef.current, pitchBoundsRef.current),
         });
       })
       .catch((requestError: unknown) => {
@@ -401,7 +466,7 @@ export default function TacticalBoard({ teams }: { teams: Team[] }) {
     }));
     setPlayerPositions((current) => ({
       ...current,
-      [side]: defaultPositions(side, formations[formation], nextAssignments),
+      [side]: assignedPositions(side, formations[formation], nextAssignments, squads[side], positionLock, pitchBounds),
     }));
   };
 
@@ -411,7 +476,7 @@ export default function TacticalBoard({ teams }: { teams: Team[] }) {
     setAssignments((current) => ({ ...current, [side]: nextAssignments }));
     setPlayerPositions((current) => ({
       ...current,
-      [side]: defaultPositions(side, slots, nextAssignments),
+      [side]: assignedPositions(side, slots, nextAssignments, squads[side], positionLock, pitchBounds),
     }));
   };
 
@@ -440,18 +505,60 @@ export default function TacticalBoard({ teams }: { teams: Team[] }) {
       delete nextSide[playerId];
       if (replacedPlayerId !== null) delete nextSide[replacedPlayerId];
       if (slotIndex !== null) {
-        nextSide[playerId] = pitchPosition(side, formations[formationBySide[side]][slotIndex]);
+        const player = squads[side].find((candidate) => candidate.id === playerId);
+        const position = pitchPosition(side, formations[formationBySide[side]][slotIndex]);
+        nextSide[playerId] = constrainPlayerPosition({
+          side,
+          role: player?.position,
+          position,
+          positionLock,
+          bounds: pitchBounds,
+        }) ?? position;
       }
       return { ...current, [side]: nextSide };
     });
   };
 
-  const movePlayer = (side: Side, playerId: number, position: PitchPosition) => {
+  const movePlayer = (
+    side: Side,
+    playerId: number,
+    position: PitchPosition,
+    bounds: ReturnType<typeof getPitchDragBounds>,
+  ) => {
+    const player = squads[side].find((candidate) => candidate.id === playerId);
+    const constrained = constrainPlayerPosition({
+      side,
+      role: player?.position,
+      position,
+      positionLock,
+      bounds,
+    });
+    if (!constrained) return;
     setPlayerPositions((current) => ({
       ...current,
-      [side]: { ...current[side], [playerId]: position },
+      [side]: { ...current[side], [playerId]: constrained },
     }));
   };
+
+  const togglePositionLock = () => {
+    if (positionLock) {
+      setPositionLock(false);
+      return;
+    }
+    setPlayerPositions((current) => ({
+      home: constrainPositionsForSide("home", current.home, squads.home, true, pitchBounds),
+      away: constrainPositionsForSide("away", current.away, squads.away, true, pitchBounds),
+    }));
+    setPositionLock(true);
+  };
+
+  useEffect(() => {
+    if (!positionLock) return;
+    setPlayerPositions((current) => ({
+      home: constrainPositionsForSide("home", current.home, squads.home, true, pitchBounds),
+      away: constrainPositionsForSide("away", current.away, squads.away, true, pitchBounds),
+    }));
+  }, [pitchBounds, positionLock, squads.home, squads.away]);
 
   const sides: Side[] = ["home", "away"];
   const placedCounts = sides.map((side) => Object.values(assignments[side]).filter((id) => id !== null).length);
@@ -511,9 +618,21 @@ export default function TacticalBoard({ teams }: { teams: Team[] }) {
                 <h2>Starting shapes</h2>
                 <p className="pitch-instructions">DRAG PLAYER MARKERS TO CUSTOMIZE · RESET EACH SIDE INDEPENDENTLY</p>
               </div>
-              <div className="pitch-key">
-                <span><i className="key-dot key-dot--home" />{selectedTeams.home.name}</span>
-                <span><i className="key-dot key-dot--away" />{selectedTeams.away.name}</span>
+              <div className="pitch-tools">
+                <div className="pitch-key">
+                  <span><i className="key-dot key-dot--home" />{selectedTeams.home.name}</span>
+                  <span><i className="key-dot key-dot--away" />{selectedTeams.away.name}</span>
+                </div>
+                <button
+                  className={`position-lock-toggle${positionLock ? " is-locked" : ""}`}
+                  type="button"
+                  aria-pressed={positionLock}
+                  onClick={togglePositionLock}
+                >
+                  <span>Position Lock</span>
+                  <strong>{positionLock ? "ON" : "OFF"}</strong>
+                  <small>{positionLock ? "Role-constrained movement" : "Free movement"}</small>
+                </button>
               </div>
             </div>
             <Pitch
@@ -523,6 +642,7 @@ export default function TacticalBoard({ teams }: { teams: Team[] }) {
               assignments={assignments}
               playerPositions={playerPositions}
               onPlayerMove={movePlayer}
+              onPitchBoundsChange={setPitchBounds}
             />
             <div className="pitch-footnote">
               <span><strong>{formationBySide.home}</strong> {selectedTeams.home.name} <i>·</i> {placedCounts[0]} of 11 assigned</span>
