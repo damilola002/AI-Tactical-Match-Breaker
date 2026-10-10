@@ -25,6 +25,15 @@ class LocalASGITestClient:
 
         return asyncio.run(request())
 
+    def post(self, path: str, **kwargs):
+        async def request():
+            async with httpx.AsyncClient(
+                transport=self.transport, base_url="http://testserver"
+            ) as client:
+                return await client.post(path, **kwargs)
+
+        return asyncio.run(request())
+
 
 @pytest.fixture
 def client():

@@ -389,3 +389,32 @@ h2 { color: #f0f2e8; font-size: 1.45rem; font-weight: 600; }
   .analysis-subheading > span { text-align: left; }
   .insight-groups { grid-template-columns: 1fr; }
 }
+
+.tactical-report { margin: 0 0 30px; padding: 23px; border: 1px solid #43513d; border-radius: 5px; background: #191e18; color: #e8ebdf; }
+.tactical-report-heading { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.tactical-report-heading h2 { margin: 4px 0 6px; font-family: var(--display-font); font-size: 27px; }
+.tactical-report-heading p:last-child { margin: 0; color: #a6ad9b; font-size: 13px; }
+.report-generate-button { flex: 0 0 auto; border: 1px solid #a5c879; border-radius: 3px; background: #b4d886; color: #182016; padding: 11px 16px; font-weight: 800; cursor: pointer; }
+.report-generate-button:disabled { opacity: .6; cursor: wait; }
+.report-mock-notice, .report-data-label { color: #c3d99d; font-size: 10px; font-weight: 800; letter-spacing: .12em; }
+.report-mock-notice { margin: 18px 0 12px; }
+.report-state { margin: 12px 0 0; padding: 13px; border: 1px solid #343d30; color: #c3c9ba; font-size: 13px; }
+.report-state--error { border-color: #8b4843; color: #ffaaa0; }
+.report-state--stale { border-color: #a9803b; color: #f3cb7d; }
+.report-content { border-top: 1px solid #343d30; }
+.report-summary { max-width: 900px; color: #eef1e8; line-height: 1.65; }
+.report-subsection { margin-top: 20px; }
+.report-subsection h3 { margin: 0 0 10px; color: #e8eddd; font-family: var(--display-font); font-size: 18px; }
+.report-subsection > p, .report-subsection li { color: #b4bbab; font-size: 13px; line-height: 1.55; }
+.report-item { margin: 9px 0; padding: 12px 14px; border-left: 2px solid #8fae69; background: #20261e; }
+.report-item > p { margin: 0 0 7px; color: #e3e8dc; font-size: 13px; line-height: 1.5; }
+.report-confidence { display: inline-block; color: #b9d398; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+.report-evidence-list { margin: 7px 0 0; padding-left: 18px; }
+.report-evidence-list li { margin: 3px 0; color: #9ea895; font-size: 11px; }
+.report-limitation { display: block; margin-top: 6px; color: #a7ad9c; font-size: 11px; }
+
+@media (max-width: 620px) {
+  .tactical-report { padding: 15px 12px; }
+  .tactical-report-heading { align-items: flex-start; flex-direction: column; }
+  .report-generate-button { width: 100%; }
+}

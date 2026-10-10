@@ -1,0 +1,1640 @@
+{
+  "cases": [
+    {
+      "name": "ordinary-both-attacking-directions-and-aliases",
+      "teams": {
+        "home": "Aster FC",
+        "away": "Björk & O'Neil"
+      },
+      "home": [
+        {
+          "player_id": 1,
+          "name": "Māe O'Neil",
+          "position_role": "GK",
+          "position": {
+            "x": 5,
+            "y": 50
+          }
+        },
+        {
+          "player_id": 2,
+          "name": "Center-Back",
+          "position_role": "Centre_Back",
+          "position": {
+            "x": 20,
+            "y": 20
+          }
+        },
+        {
+          "player_id": 3,
+          "name": "Midfielder",
+          "position_role": "CM",
+          "position": {
+            "x": 50,
+            "y": 50
+          }
+        },
+        {
+          "player_id": 4,
+          "name": "Forward",
+          "position_role": "ST",
+          "position": {
+            "x": 80,
+            "y": 80
+          }
+        },
+        {
+          "player_id": 5,
+          "name": "Mystery Role",
+          "position_role": "Mystery Role",
+          "position": {
+            "x": 100,
+            "y": 100
+          }
+        },
+        {
+          "player_id": 6,
+          "name": "Wide Defender",
+          "position_role": "RWB",
+          "position": {
+            "x": 20,
+            "y": 80
+          }
+        }
+      ],
+      "away": [
+        {
+          "player_id": 11,
+          "name": "Away Defender",
+          "position_role": "Defence",
+          "position": {
+            "x": 80,
+            "y": 30
+          }
+        },
+        {
+          "player_id": 12,
+          "name": "Away Midfielder",
+          "position_role": "AM",
+          "position": {
+            "x": 50,
+            "y": 50
+          }
+        },
+        {
+          "player_id": 13,
+          "name": "Away Forward",
+          "position_role": "Winger",
+          "position": {
+            "x": 20,
+            "y": 70
+          }
+        }
+      ],
+      "frontend_expected": {
+        "metrics": {
+          "home": {
+            "side": "home",
+            "placedPlayerCount": 6,
+            "averagePosition": {
+              "x": 45.833333333333336,
+              "y": 63.333333333333336
+            },
+            "widthMeters": 54.400000000000006,
+            "lines": {
+              "defense": {
+                "averageDepthMeters": 21,
+                "playerCount": 2
+              },
+              "midfield": {
+                "averageDepthMeters": 52.5,
+                "playerCount": 1
+              },
+              "forward": {
+                "averageDepthMeters": 84,
+                "playerCount": 1
+              }
+            },
+            "lineSpacingMeters": {
+              "defenseToMidfield": 31.5,
+              "midfieldToForward": 31.5
+            },
+            "spatialGaps": [
+              {
+                "firstPlayer": "Center-Back",
+                "secondPlayer": "Midfielder",
+                "distanceMeters": 37.528788949285314
+              },
+              {
+                "firstPlayer": "Māe O'Neil",
+                "secondPlayer": "Wide Defender",
+                "distanceMeters": 25.77251442913555
+              },
+              {
+                "firstPlayer": "Māe O'Neil",
+                "secondPlayer": "Center-Back",
+                "distanceMeters": 25.772514429135548
+              },
+              {
+                "firstPlayer": "Forward",
+                "secondPlayer": "Mystery Role",
+                "distanceMeters": 25.01919263285688
+              }
+            ]
+          },
+          "away": {
+            "side": "away",
+            "placedPlayerCount": 3,
+            "averagePosition": {
+              "x": 50,
+              "y": 50
+            },
+            "widthMeters": 27.200000000000003,
+            "lines": {
+              "defense": {
+                "averageDepthMeters": 21,
+                "playerCount": 1
+              },
+              "midfield": {
+                "averageDepthMeters": 52.5,
+                "playerCount": 1
+              },
+              "forward": {
+                "averageDepthMeters": 84,
+                "playerCount": 1
+              }
+            },
+            "lineSpacingMeters": {
+              "defenseToMidfield": 31.5,
+              "midfieldToForward": 31.5
+            },
+            "spatialGaps": [
+              {
+                "firstPlayer": "Away Defender",
+                "secondPlayer": "Away Midfielder",
+                "distanceMeters": 34.31049402150893
+              },
+              {
+                "firstPlayer": "Away Midfielder",
+                "secondPlayer": "Away Forward",
+                "distanceMeters": 34.31049402150893
+              }
+            ]
+          }
+        },
+        "zones": [
+          {
+            "row": 0,
+            "column": 0,
+            "label": "Top · Left",
+            "homeCount": 1,
+            "awayCount": 0,
+            "homeDifference": 1
+          },
+          {
+            "row": 0,
+            "column": 1,
+            "label": "Top · Center",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 0,
+            "column": 2,
+            "label": "Top · Right",
+            "homeCount": 0,
+            "awayCount": 1,
+            "homeDifference": -1
+          },
+          {
+            "row": 1,
+            "column": 0,
+            "label": "Middle · Left",
+            "homeCount": 1,
+            "awayCount": 0,
+            "homeDifference": 1
+          },
+          {
+            "row": 1,
+            "column": 1,
+            "label": "Middle · Center",
+            "homeCount": 1,
+            "awayCount": 1,
+            "homeDifference": 0
+          },
+          {
+            "row": 1,
+            "column": 2,
+            "label": "Middle · Right",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 2,
+            "column": 0,
+            "label": "Bottom · Left",
+            "homeCount": 1,
+            "awayCount": 1,
+            "homeDifference": 0
+          },
+          {
+            "row": 2,
+            "column": 1,
+            "label": "Bottom · Center",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 2,
+            "column": 2,
+            "label": "Bottom · Right",
+            "homeCount": 2,
+            "awayCount": 0,
+            "homeDifference": 2
+          }
+        ],
+        "insights": [
+          {
+            "id": "line_spacing:home:defenseToMidfield",
+            "category": "line_spacing",
+            "severity": "notable",
+            "teamSide": "home",
+            "title": "Defensive-to-midfield separation",
+            "description": "Aster FC defensive-to-midfield separation is 31.5m.",
+            "relatedMetric": {
+              "key": "defenseToMidfield",
+              "value": 31.5,
+              "unit": "m",
+              "threshold": 18
+            }
+          },
+          {
+            "id": "line_spacing:home:midfieldToForward",
+            "category": "line_spacing",
+            "severity": "notable",
+            "teamSide": "home",
+            "title": "Midfield-to-forward separation",
+            "description": "Aster FC midfield-to-forward separation is 31.5m.",
+            "relatedMetric": {
+              "key": "midfieldToForward",
+              "value": 31.5,
+              "unit": "m",
+              "threshold": 18
+            }
+          },
+          {
+            "id": "line_spacing:away:defenseToMidfield",
+            "category": "line_spacing",
+            "severity": "notable",
+            "teamSide": "away",
+            "title": "Defensive-to-midfield separation",
+            "description": "Björk & O'Neil defensive-to-midfield separation is 31.5m.",
+            "relatedMetric": {
+              "key": "defenseToMidfield",
+              "value": 31.5,
+              "unit": "m",
+              "threshold": 18
+            }
+          },
+          {
+            "id": "line_spacing:away:midfieldToForward",
+            "category": "line_spacing",
+            "severity": "notable",
+            "teamSide": "away",
+            "title": "Midfield-to-forward separation",
+            "description": "Björk & O'Neil midfield-to-forward separation is 31.5m.",
+            "relatedMetric": {
+              "key": "midfieldToForward",
+              "value": 31.5,
+              "unit": "m",
+              "threshold": 18
+            }
+          },
+          {
+            "id": "zone_difference:2:2",
+            "category": "zone_difference",
+            "severity": "notable",
+            "teamSide": "home",
+            "title": "Numerical difference · Bottom · Right",
+            "description": "Aster FC has a 2–0 numerical advantage in Bottom · Right.",
+            "relatedMetric": {
+              "key": "zoneDifference",
+              "value": 2,
+              "unit": "players",
+              "threshold": 2
+            },
+            "zone": {
+              "row": 2,
+              "column": 2,
+              "label": "Bottom · Right",
+              "homeCount": 2,
+              "awayCount": 0
+            }
+          },
+          {
+            "id": "spatial_gap:home:%5B%22Center-Back%22%2C%22M%C4%81e%20O'Neil%22%2C25.772514429135548%5D",
+            "category": "spatial_gap",
+            "severity": "notable",
+            "teamSide": "home",
+            "title": "Nearest-player spatial gap",
+            "description": "Aster FC spatial gap: Center-Back ↔ Māe O'Neil — 25.8m.",
+            "relatedMetric": {
+              "key": "spatialGapDistance",
+              "value": 25.772514429135548,
+              "unit": "m",
+              "threshold": 25
+            },
+            "players": [
+              "Center-Back",
+              "Māe O'Neil"
+            ]
+          },
+          {
+            "id": "spatial_gap:home:%5B%22Center-Back%22%2C%22Midfielder%22%2C37.528788949285314%5D",
+            "category": "spatial_gap",
+            "severity": "notable",
+            "teamSide": "home",
+            "title": "Nearest-player spatial gap",
+            "description": "Aster FC spatial gap: Center-Back ↔ Midfielder — 37.5m.",
+            "relatedMetric": {
+              "key": "spatialGapDistance",
+              "value": 37.528788949285314,
+              "unit": "m",
+              "threshold": 25
+            },
+            "players": [
+              "Center-Back",
+              "Midfielder"
+            ]
+          },
+          {
+            "id": "spatial_gap:home:%5B%22Forward%22%2C%22Mystery%20Role%22%2C25.01919263285688%5D",
+            "category": "spatial_gap",
+            "severity": "notable",
+            "teamSide": "home",
+            "title": "Nearest-player spatial gap",
+            "description": "Aster FC spatial gap: Forward ↔ Mystery Role — 25.0m.",
+            "relatedMetric": {
+              "key": "spatialGapDistance",
+              "value": 25.01919263285688,
+              "unit": "m",
+              "threshold": 25
+            },
+            "players": [
+              "Forward",
+              "Mystery Role"
+            ]
+          },
+          {
+            "id": "spatial_gap:home:%5B%22M%C4%81e%20O'Neil%22%2C%22Wide%20Defender%22%2C25.77251442913555%5D",
+            "category": "spatial_gap",
+            "severity": "notable",
+            "teamSide": "home",
+            "title": "Nearest-player spatial gap",
+            "description": "Aster FC spatial gap: Māe O'Neil ↔ Wide Defender — 25.8m.",
+            "relatedMetric": {
+              "key": "spatialGapDistance",
+              "value": 25.77251442913555,
+              "unit": "m",
+              "threshold": 25
+            },
+            "players": [
+              "Māe O'Neil",
+              "Wide Defender"
+            ]
+          },
+          {
+            "id": "spatial_gap:away:%5B%22Away%20Defender%22%2C%22Away%20Midfielder%22%2C34.31049402150893%5D",
+            "category": "spatial_gap",
+            "severity": "notable",
+            "teamSide": "away",
+            "title": "Nearest-player spatial gap",
+            "description": "Björk & O'Neil spatial gap: Away Defender ↔ Away Midfielder — 34.3m.",
+            "relatedMetric": {
+              "key": "spatialGapDistance",
+              "value": 34.31049402150893,
+              "unit": "m",
+              "threshold": 25
+            },
+            "players": [
+              "Away Defender",
+              "Away Midfielder"
+            ]
+          },
+          {
+            "id": "spatial_gap:away:%5B%22Away%20Forward%22%2C%22Away%20Midfielder%22%2C34.31049402150893%5D",
+            "category": "spatial_gap",
+            "severity": "notable",
+            "teamSide": "away",
+            "title": "Nearest-player spatial gap",
+            "description": "Björk & O'Neil spatial gap: Away Forward ↔ Away Midfielder — 34.3m.",
+            "relatedMetric": {
+              "key": "spatialGapDistance",
+              "value": 34.31049402150893,
+              "unit": "m",
+              "threshold": 25
+            },
+            "players": [
+              "Away Forward",
+              "Away Midfielder"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "empty-and-incomplete",
+      "teams": {
+        "home": "Empty Home",
+        "away": "Solo Away"
+      },
+      "home": [],
+      "away": [
+        {
+          "player_id": 21,
+          "name": "Unknown Ω",
+          "position_role": "Mystery",
+          "position": {
+            "x": 100,
+            "y": 100
+          }
+        }
+      ],
+      "frontend_expected": {
+        "metrics": {
+          "home": {
+            "side": "home",
+            "placedPlayerCount": 0,
+            "averagePosition": null,
+            "widthMeters": null,
+            "lines": {
+              "defense": null,
+              "midfield": null,
+              "forward": null
+            },
+            "lineSpacingMeters": {
+              "defenseToMidfield": null,
+              "midfieldToForward": null
+            },
+            "spatialGaps": []
+          },
+          "away": {
+            "side": "away",
+            "placedPlayerCount": 1,
+            "averagePosition": {
+              "x": 100,
+              "y": 100
+            },
+            "widthMeters": 0,
+            "lines": {
+              "defense": null,
+              "midfield": null,
+              "forward": null
+            },
+            "lineSpacingMeters": {
+              "defenseToMidfield": null,
+              "midfieldToForward": null
+            },
+            "spatialGaps": []
+          }
+        },
+        "zones": [
+          {
+            "row": 0,
+            "column": 0,
+            "label": "Top · Left",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 0,
+            "column": 1,
+            "label": "Top · Center",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 0,
+            "column": 2,
+            "label": "Top · Right",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 1,
+            "column": 0,
+            "label": "Middle · Left",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 1,
+            "column": 1,
+            "label": "Middle · Center",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 1,
+            "column": 2,
+            "label": "Middle · Right",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 2,
+            "column": 0,
+            "label": "Bottom · Left",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 2,
+            "column": 1,
+            "label": "Bottom · Center",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 2,
+            "column": 2,
+            "label": "Bottom · Right",
+            "homeCount": 0,
+            "awayCount": 1,
+            "homeDifference": -1
+          }
+        ],
+        "insights": []
+      }
+    },
+    {
+      "name": "zone-boundaries",
+      "teams": {
+        "home": "Boundary Home",
+        "away": "Boundary Away"
+      },
+      "home": [
+        {
+          "player_id": 31,
+          "name": "Lower thirds",
+          "position_role": "Defender",
+          "position": {
+            "x": 33.33333333333333,
+            "y": 33.33333333333333
+          }
+        },
+        {
+          "player_id": 32,
+          "name": "Upper thirds",
+          "position_role": "Midfielder",
+          "position": {
+            "x": 33.333333333333336,
+            "y": 33.333333333333336
+          }
+        }
+      ],
+      "away": [
+        {
+          "player_id": 33,
+          "name": "Pitch edge",
+          "position_role": "FWD",
+          "position": {
+            "x": 100,
+            "y": 100
+          }
+        }
+      ],
+      "frontend_expected": {
+        "metrics": {
+          "home": {
+            "side": "home",
+            "placedPlayerCount": 2,
+            "averagePosition": {
+              "x": 33.33333333333333,
+              "y": 33.33333333333333
+            },
+            "widthMeters": 4.831690603168682e-15,
+            "lines": {
+              "defense": {
+                "averageDepthMeters": 34.99999999999999,
+                "playerCount": 1
+              },
+              "midfield": {
+                "averageDepthMeters": 35.00000000000001,
+                "playerCount": 1
+              },
+              "forward": null
+            },
+            "lineSpacingMeters": {
+              "defenseToMidfield": 1.4210854715202004e-14,
+              "midfieldToForward": null
+            },
+            "spatialGaps": []
+          },
+          "away": {
+            "side": "away",
+            "placedPlayerCount": 1,
+            "averagePosition": {
+              "x": 100,
+              "y": 100
+            },
+            "widthMeters": 0,
+            "lines": {
+              "defense": null,
+              "midfield": null,
+              "forward": {
+                "averageDepthMeters": 0,
+                "playerCount": 1
+              }
+            },
+            "lineSpacingMeters": {
+              "defenseToMidfield": null,
+              "midfieldToForward": null
+            },
+            "spatialGaps": []
+          }
+        },
+        "zones": [
+          {
+            "row": 0,
+            "column": 0,
+            "label": "Top · Left",
+            "homeCount": 1,
+            "awayCount": 0,
+            "homeDifference": 1
+          },
+          {
+            "row": 0,
+            "column": 1,
+            "label": "Top · Center",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 0,
+            "column": 2,
+            "label": "Top · Right",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 1,
+            "column": 0,
+            "label": "Middle · Left",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 1,
+            "column": 1,
+            "label": "Middle · Center",
+            "homeCount": 1,
+            "awayCount": 0,
+            "homeDifference": 1
+          },
+          {
+            "row": 1,
+            "column": 2,
+            "label": "Middle · Right",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 2,
+            "column": 0,
+            "label": "Bottom · Left",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 2,
+            "column": 1,
+            "label": "Bottom · Center",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 2,
+            "column": 2,
+            "label": "Bottom · Right",
+            "homeCount": 0,
+            "awayCount": 1,
+            "homeDifference": -1
+          }
+        ],
+        "insights": []
+      }
+    },
+    {
+      "name": "exact-gap-threshold",
+      "teams": {
+        "home": "Exact Gap",
+        "away": "No Players"
+      },
+      "home": [
+        {
+          "player_id": 41,
+          "name": "Origin",
+          "position_role": "DEF",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "player_id": 42,
+          "name": "Twenty-five",
+          "position_role": "FWD",
+          "position": {
+            "x": 23.80952380952381,
+            "y": 0
+          }
+        }
+      ],
+      "away": [],
+      "frontend_expected": {
+        "metrics": {
+          "home": {
+            "side": "home",
+            "placedPlayerCount": 2,
+            "averagePosition": {
+              "x": 11.904761904761905,
+              "y": 0
+            },
+            "widthMeters": 0,
+            "lines": {
+              "defense": {
+                "averageDepthMeters": 0,
+                "playerCount": 1
+              },
+              "midfield": null,
+              "forward": {
+                "averageDepthMeters": 25,
+                "playerCount": 1
+              }
+            },
+            "lineSpacingMeters": {
+              "defenseToMidfield": null,
+              "midfieldToForward": null
+            },
+            "spatialGaps": []
+          },
+          "away": {
+            "side": "away",
+            "placedPlayerCount": 0,
+            "averagePosition": null,
+            "widthMeters": null,
+            "lines": {
+              "defense": null,
+              "midfield": null,
+              "forward": null
+            },
+            "lineSpacingMeters": {
+              "defenseToMidfield": null,
+              "midfieldToForward": null
+            },
+            "spatialGaps": []
+          }
+        },
+        "zones": [
+          {
+            "row": 0,
+            "column": 0,
+            "label": "Top · Left",
+            "homeCount": 2,
+            "awayCount": 0,
+            "homeDifference": 2
+          },
+          {
+            "row": 0,
+            "column": 1,
+            "label": "Top · Center",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 0,
+            "column": 2,
+            "label": "Top · Right",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 1,
+            "column": 0,
+            "label": "Middle · Left",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 1,
+            "column": 1,
+            "label": "Middle · Center",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 1,
+            "column": 2,
+            "label": "Middle · Right",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 2,
+            "column": 0,
+            "label": "Bottom · Left",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 2,
+            "column": 1,
+            "label": "Bottom · Center",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 2,
+            "column": 2,
+            "label": "Bottom · Right",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          }
+        ],
+        "insights": [
+          {
+            "id": "zone_difference:0:0",
+            "category": "zone_difference",
+            "severity": "notable",
+            "teamSide": "home",
+            "title": "Numerical difference · Top · Left",
+            "description": "Exact Gap has a 2–0 numerical advantage in Top · Left.",
+            "relatedMetric": {
+              "key": "zoneDifference",
+              "value": 2,
+              "unit": "players",
+              "threshold": 2
+            },
+            "zone": {
+              "row": 0,
+              "column": 0,
+              "label": "Top · Left",
+              "homeCount": 2,
+              "awayCount": 0
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "just-above-gap-threshold",
+      "teams": {
+        "home": "Above Gap",
+        "away": "No Players"
+      },
+      "home": [
+        {
+          "player_id": 51,
+          "name": "Origin",
+          "position_role": "DEF",
+          "position": {
+            "x": 0,
+            "y": 0
+          }
+        },
+        {
+          "player_id": 52,
+          "name": "Above threshold",
+          "position_role": "FWD",
+          "position": {
+            "x": 23.80952381904762,
+            "y": 0
+          }
+        }
+      ],
+      "away": [],
+      "frontend_expected": {
+        "metrics": {
+          "home": {
+            "side": "home",
+            "placedPlayerCount": 2,
+            "averagePosition": {
+              "x": 11.90476190952381,
+              "y": 0
+            },
+            "widthMeters": 0,
+            "lines": {
+              "defense": {
+                "averageDepthMeters": 0,
+                "playerCount": 1
+              },
+              "midfield": null,
+              "forward": {
+                "averageDepthMeters": 25.00000001,
+                "playerCount": 1
+              }
+            },
+            "lineSpacingMeters": {
+              "defenseToMidfield": null,
+              "midfieldToForward": null
+            },
+            "spatialGaps": [
+              {
+                "firstPlayer": "Origin",
+                "secondPlayer": "Above threshold",
+                "distanceMeters": 25.00000001
+              }
+            ]
+          },
+          "away": {
+            "side": "away",
+            "placedPlayerCount": 0,
+            "averagePosition": null,
+            "widthMeters": null,
+            "lines": {
+              "defense": null,
+              "midfield": null,
+              "forward": null
+            },
+            "lineSpacingMeters": {
+              "defenseToMidfield": null,
+              "midfieldToForward": null
+            },
+            "spatialGaps": []
+          }
+        },
+        "zones": [
+          {
+            "row": 0,
+            "column": 0,
+            "label": "Top · Left",
+            "homeCount": 2,
+            "awayCount": 0,
+            "homeDifference": 2
+          },
+          {
+            "row": 0,
+            "column": 1,
+            "label": "Top · Center",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 0,
+            "column": 2,
+            "label": "Top · Right",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 1,
+            "column": 0,
+            "label": "Middle · Left",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 1,
+            "column": 1,
+            "label": "Middle · Center",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 1,
+            "column": 2,
+            "label": "Middle · Right",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 2,
+            "column": 0,
+            "label": "Bottom · Left",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 2,
+            "column": 1,
+            "label": "Bottom · Center",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 2,
+            "column": 2,
+            "label": "Bottom · Right",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          }
+        ],
+        "insights": [
+          {
+            "id": "zone_difference:0:0",
+            "category": "zone_difference",
+            "severity": "notable",
+            "teamSide": "home",
+            "title": "Numerical difference · Top · Left",
+            "description": "Above Gap has a 2–0 numerical advantage in Top · Left.",
+            "relatedMetric": {
+              "key": "zoneDifference",
+              "value": 2,
+              "unit": "players",
+              "threshold": 2
+            },
+            "zone": {
+              "row": 0,
+              "column": 0,
+              "label": "Top · Left",
+              "homeCount": 2,
+              "awayCount": 0
+            }
+          },
+          {
+            "id": "spatial_gap:home:%5B%22Above%20threshold%22%2C%22Origin%22%2C25.00000001%5D",
+            "category": "spatial_gap",
+            "severity": "notable",
+            "teamSide": "home",
+            "title": "Nearest-player spatial gap",
+            "description": "Above Gap spatial gap: Above threshold ↔ Origin — 25.0m.",
+            "relatedMetric": {
+              "key": "spatialGapDistance",
+              "value": 25.00000001,
+              "unit": "m",
+              "threshold": 25
+            },
+            "players": [
+              "Above threshold",
+              "Origin"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "equal-distance-tie-preserves-input-order",
+      "teams": {
+        "home": "Tie Home",
+        "away": "No Players"
+      },
+      "home": [
+        {
+          "player_id": 61,
+          "name": "Center",
+          "position_role": "DEF",
+          "position": {
+            "x": 50,
+            "y": 50
+          }
+        },
+        {
+          "player_id": 63,
+          "name": "Right / wing",
+          "position_role": "FWD",
+          "position": {
+            "x": 80,
+            "y": 50
+          }
+        },
+        {
+          "player_id": 62,
+          "name": "Left's wing",
+          "position_role": "FWD",
+          "position": {
+            "x": 20,
+            "y": 50
+          }
+        }
+      ],
+      "away": [],
+      "frontend_expected": {
+        "metrics": {
+          "home": {
+            "side": "home",
+            "placedPlayerCount": 3,
+            "averagePosition": {
+              "x": 50,
+              "y": 50
+            },
+            "widthMeters": 0,
+            "lines": {
+              "defense": {
+                "averageDepthMeters": 52.5,
+                "playerCount": 1
+              },
+              "midfield": null,
+              "forward": {
+                "averageDepthMeters": 52.5,
+                "playerCount": 2
+              }
+            },
+            "lineSpacingMeters": {
+              "defenseToMidfield": null,
+              "midfieldToForward": null
+            },
+            "spatialGaps": [
+              {
+                "firstPlayer": "Center",
+                "secondPlayer": "Right / wing",
+                "distanceMeters": 31.5
+              },
+              {
+                "firstPlayer": "Center",
+                "secondPlayer": "Left's wing",
+                "distanceMeters": 31.5
+              }
+            ]
+          },
+          "away": {
+            "side": "away",
+            "placedPlayerCount": 0,
+            "averagePosition": null,
+            "widthMeters": null,
+            "lines": {
+              "defense": null,
+              "midfield": null,
+              "forward": null
+            },
+            "lineSpacingMeters": {
+              "defenseToMidfield": null,
+              "midfieldToForward": null
+            },
+            "spatialGaps": []
+          }
+        },
+        "zones": [
+          {
+            "row": 0,
+            "column": 0,
+            "label": "Top · Left",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 0,
+            "column": 1,
+            "label": "Top · Center",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 0,
+            "column": 2,
+            "label": "Top · Right",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 1,
+            "column": 0,
+            "label": "Middle · Left",
+            "homeCount": 1,
+            "awayCount": 0,
+            "homeDifference": 1
+          },
+          {
+            "row": 1,
+            "column": 1,
+            "label": "Middle · Center",
+            "homeCount": 1,
+            "awayCount": 0,
+            "homeDifference": 1
+          },
+          {
+            "row": 1,
+            "column": 2,
+            "label": "Middle · Right",
+            "homeCount": 1,
+            "awayCount": 0,
+            "homeDifference": 1
+          },
+          {
+            "row": 2,
+            "column": 0,
+            "label": "Bottom · Left",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 2,
+            "column": 1,
+            "label": "Bottom · Center",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          },
+          {
+            "row": 2,
+            "column": 2,
+            "label": "Bottom · Right",
+            "homeCount": 0,
+            "awayCount": 0,
+            "homeDifference": 0
+          }
+        ],
+        "insights": [
+          {
+            "id": "spatial_gap:home:%5B%22Center%22%2C%22Left's%20wing%22%2C31.5%5D",
+            "category": "spatial_gap",
+            "severity": "notable",
+            "teamSide": "home",
+            "title": "Nearest-player spatial gap",
+            "description": "Tie Home spatial gap: Center ↔ Left's wing — 31.5m.",
+            "relatedMetric": {
+              "key": "spatialGapDistance",
+              "value": 31.5,
+              "unit": "m",
+              "threshold": 25
+            },
+            "players": [
+              "Center",
+              "Left's wing"
+            ]
+          },
+          {
+            "id": "spatial_gap:home:%5B%22Center%22%2C%22Right%20%2F%20wing%22%2C31.5%5D",
+            "category": "spatial_gap",
+            "severity": "notable",
+            "teamSide": "home",
+            "title": "Nearest-player spatial gap",
+            "description": "Tie Home spatial gap: Center ↔ Right / wing — 31.5m.",
+            "relatedMetric": {
+              "key": "spatialGapDistance",
+              "value": 31.5,
+              "unit": "m",
+              "threshold": 25
+            },
+            "players": [
+              "Center",
+              "Right / wing"
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "insight_cases": [
+    {
+      "name": "strict-thresholds-near-boundaries",
+      "teams": {
+        "home": "Aster FC",
+        "away": "Björk & O'Neil"
+      },
+      "metrics": {
+        "home": {
+          "side": "home",
+          "placedPlayerCount": 3,
+          "averagePosition": {
+            "x": 50,
+            "y": 50
+          },
+          "widthMeters": 20,
+          "lines": {
+            "defense": null,
+            "midfield": null,
+            "forward": null
+          },
+          "lineSpacingMeters": {
+            "defenseToMidfield": 18,
+            "midfieldToForward": 18.000000001
+          },
+          "spatialGaps": [
+            {
+              "firstPlayer": "Exact",
+              "secondPlayer": "Gap",
+              "distanceMeters": 25
+            },
+            {
+              "firstPlayer": "Near",
+              "secondPlayer": "Gap",
+              "distanceMeters": 25.000000001
+            }
+          ]
+        },
+        "away": {
+          "side": "away",
+          "placedPlayerCount": 0,
+          "averagePosition": null,
+          "widthMeters": null,
+          "lines": {
+            "defense": null,
+            "midfield": null,
+            "forward": null
+          },
+          "lineSpacingMeters": {
+            "defenseToMidfield": 17.999999999,
+            "midfieldToForward": null
+          },
+          "spatialGaps": []
+        }
+      },
+      "zones": [
+        {
+          "row": 0,
+          "column": 0,
+          "label": "Top · Left",
+          "homeCount": 2,
+          "awayCount": 1,
+          "homeDifference": 1
+        },
+        {
+          "row": 0,
+          "column": 1,
+          "label": "Top · Center",
+          "homeCount": 3,
+          "awayCount": 1,
+          "homeDifference": 2
+        },
+        {
+          "row": 2,
+          "column": 2,
+          "label": "Bottom · Right",
+          "homeCount": 1,
+          "awayCount": 3,
+          "homeDifference": -2
+        }
+      ],
+      "frontend_expected": [
+        {
+          "id": "line_spacing:home:midfieldToForward",
+          "category": "line_spacing",
+          "severity": "notable",
+          "teamSide": "home",
+          "title": "Midfield-to-forward separation",
+          "description": "Aster FC midfield-to-forward separation is 18.0m.",
+          "relatedMetric": {
+            "key": "midfieldToForward",
+            "value": 18.000000001,
+            "unit": "m",
+            "threshold": 18
+          }
+        },
+        {
+          "id": "zone_difference:0:1",
+          "category": "zone_difference",
+          "severity": "notable",
+          "teamSide": "home",
+          "title": "Numerical difference · Top · Center",
+          "description": "Aster FC has a 3–1 numerical advantage in Top · Center.",
+          "relatedMetric": {
+            "key": "zoneDifference",
+            "value": 2,
+            "unit": "players",
+            "threshold": 2
+          },
+          "zone": {
+            "row": 0,
+            "column": 1,
+            "label": "Top · Center",
+            "homeCount": 3,
+            "awayCount": 1
+          }
+        },
+        {
+          "id": "zone_difference:2:2",
+          "category": "zone_difference",
+          "severity": "notable",
+          "teamSide": "away",
+          "title": "Numerical difference · Bottom · Right",
+          "description": "Björk & O'Neil has a 3–1 numerical advantage in Bottom · Right.",
+          "relatedMetric": {
+            "key": "zoneDifference",
+            "value": 2,
+            "unit": "players",
+            "threshold": 2
+          },
+          "zone": {
+            "row": 2,
+            "column": 2,
+            "label": "Bottom · Right",
+            "homeCount": 1,
+            "awayCount": 3
+          }
+        },
+        {
+          "id": "spatial_gap:home:%5B%22Gap%22%2C%22Near%22%2C25.000000001%5D",
+          "category": "spatial_gap",
+          "severity": "notable",
+          "teamSide": "home",
+          "title": "Nearest-player spatial gap",
+          "description": "Aster FC spatial gap: Gap ↔ Near — 25.0m.",
+          "relatedMetric": {
+            "key": "spatialGapDistance",
+            "value": 25.000000001,
+            "unit": "m",
+            "threshold": 25
+          },
+          "players": [
+            "Gap",
+            "Near"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "duplicate-zones-gaps-and-unicode-ordering",
+      "teams": {
+        "home": "Home & Away",
+        "away": "Away"
+      },
+      "metrics": {
+        "home": {
+          "side": "home",
+          "placedPlayerCount": 4,
+          "averagePosition": {
+            "x": 50,
+            "y": 50
+          },
+          "widthMeters": 40,
+          "lines": {
+            "defense": null,
+            "midfield": null,
+            "forward": null
+          },
+          "lineSpacingMeters": {
+            "defenseToMidfield": null,
+            "midfieldToForward": null
+          },
+          "spatialGaps": [
+            {
+              "firstPlayer": "Björk's #9",
+              "secondPlayer": "Ángström/10",
+              "distanceMeters": 27.3
+            },
+            {
+              "firstPlayer": "Ángström/10",
+              "secondPlayer": "Björk's #9",
+              "distanceMeters": 27.3
+            },
+            {
+              "firstPlayer": "😀 Forward",
+              "secondPlayer": "A+B",
+              "distanceMeters": 26.26
+            }
+          ]
+        },
+        "away": {
+          "side": "away",
+          "placedPlayerCount": 0,
+          "averagePosition": null,
+          "widthMeters": null,
+          "lines": {
+            "defense": null,
+            "midfield": null,
+            "forward": null
+          },
+          "lineSpacingMeters": {
+            "defenseToMidfield": null,
+            "midfieldToForward": null
+          },
+          "spatialGaps": []
+        }
+      },
+      "zones": [
+        {
+          "row": 1,
+          "column": 1,
+          "label": "Middle · Center",
+          "homeCount": 4,
+          "awayCount": 2,
+          "homeDifference": 2
+        },
+        {
+          "row": 1,
+          "column": 1,
+          "label": "Conflicting duplicate",
+          "homeCount": 1,
+          "awayCount": 4,
+          "homeDifference": -3
+        },
+        {
+          "row": 0,
+          "column": 0,
+          "label": "Top · Left",
+          "homeCount": 3,
+          "awayCount": 1,
+          "homeDifference": 2
+        }
+      ],
+      "frontend_expected": [
+        {
+          "id": "zone_difference:0:0",
+          "category": "zone_difference",
+          "severity": "notable",
+          "teamSide": "home",
+          "title": "Numerical difference · Top · Left",
+          "description": "Home & Away has a 3–1 numerical advantage in Top · Left.",
+          "relatedMetric": {
+            "key": "zoneDifference",
+            "value": 2,
+            "unit": "players",
+            "threshold": 2
+          },
+          "zone": {
+            "row": 0,
+            "column": 0,
+            "label": "Top · Left",
+            "homeCount": 3,
+            "awayCount": 1
+          }
+        },
+        {
+          "id": "zone_difference:1:1",
+          "category": "zone_difference",
+          "severity": "notable",
+          "teamSide": "away",
+          "title": "Numerical difference · Conflicting duplicate",
+          "description": "Away has a 4–1 numerical advantage in Conflicting duplicate.",
+          "relatedMetric": {
+            "key": "zoneDifference",
+            "value": 3,
+            "unit": "players",
+            "threshold": 2
+          },
+          "zone": {
+            "row": 1,
+            "column": 1,
+            "label": "Conflicting duplicate",
+            "homeCount": 1,
+            "awayCount": 4
+          }
+        },
+        {
+          "id": "spatial_gap:home:%5B%22A%2BB%22%2C%22%F0%9F%98%80%20Forward%22%2C26.26%5D",
+          "category": "spatial_gap",
+          "severity": "notable",
+          "teamSide": "home",
+          "title": "Nearest-player spatial gap",
+          "description": "Home & Away spatial gap: A+B ↔ 😀 Forward — 26.3m.",
+          "relatedMetric": {
+            "key": "spatialGapDistance",
+            "value": 26.26,
+            "unit": "m",
+            "threshold": 25
+          },
+          "players": [
+            "A+B",
+            "😀 Forward"
+          ]
+        },
+        {
+          "id": "spatial_gap:home:%5B%22Bj%C3%B6rk's%20%239%22%2C%22%C3%81ngstr%C3%B6m%2F10%22%2C27.3%5D",
+          "category": "spatial_gap",
+          "severity": "notable",
+          "teamSide": "home",
+          "title": "Nearest-player spatial gap",
+          "description": "Home & Away spatial gap: Björk's #9 ↔ Ángström/10 — 27.3m.",
+          "relatedMetric": {
+            "key": "spatialGapDistance",
+            "value": 27.3,
+            "unit": "m",
+            "threshold": 25
+          },
+          "players": [
+            "Björk's #9",
+            "Ángström/10"
+          ]
+        }
+      ]
+    }
+  ]
+}
