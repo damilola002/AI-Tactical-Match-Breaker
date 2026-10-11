@@ -122,6 +122,7 @@ class Match(Base):
     events: Mapped[list["MatchEvent"]] = relationship(
         back_populates="match", cascade="all, delete-orphan"
     )
+    videos: Mapped[list["Video"]] = relationship(back_populates="match")
 
 
 class MatchPlayer(Base):
@@ -176,3 +177,76 @@ class MatchEvent(Base):
     description: Mapped[str | None] = mapped_column(Text, nullable=True)
 
     match: Mapped[Match] = relationship(back_populates="events")
+
+
+class Video(Base):
+    """Video metadata; media bytes live in configured local storage."""
+
+    __tablename__ = "videos"
+    __table_args__ = (
+        CheckConstraint("size_bytes >= 0", name="ck_videos_size_nonnegative"),
+        CheckConstraint(
+            "duration_ms IS NULL OR duration_ms >= 0",
+            name="ck_videos_duration_nonnegative",
+        ),
+        CheckConstraint(
+            "content_type IN ('video/mp4', 'video/webm')",
+            name="ck_videos_content_type",
+        ),
+        CheckConstraint("status IN ('ready')", name="ck_videos_status"),
+        CheckConstraint(
+            "length(trim(original_filename)) > 0",
+            name="ck_videos_filename_nonempty",
+        ),
+        Index("ix_videos_match_id", "match_id"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    match_id: Mapped[int] = mapped_column(
+        ForeignKey("matches.id", ondelete="RESTRICT"), nullable=False
+    )
+    storage_key: Mapped[str] = mapped_column(String(64), unique=True, nullable=False)
+    original_filename: Mapped[str] = mapped_column(String(255), nullable=False)
+    content_type: Mapped[str] = mapped_column(String(100), nullable=False)
+    size_bytes: Mapped[int] = mapped_column(Integer, nullable=False)
+    duration_ms: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    sha256: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    status: Mapped[str] = mapped_column(
+        String(16), nullable=False, default="ready", server_default="ready"
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+    match: Mapped[Match] = relationship(back_populates="videos")
+    evidence: Mapped[list["VideoEvidence"]] = relationship(
+        back_populates="video", passive_deletes="all"
+    )
+
+
+class VideoEvidence(Base):
+    __tablename__ = "video_evidence"
+    __table_args__ = (
+        CheckConstraint("start_ms >= 0", name="ck_video_evidence_start_nonnegative"),
+        CheckConstraint("end_ms >= 0", name="ck_video_evidence_end_nonnegative"),
+        CheckConstraint("end_ms >= start_ms", name="ck_video_evidence_end_after_start"),
+        CheckConstraint(
+            "length(trim(description)) > 0",
+            name="ck_video_evidence_description_nonempty",
+        ),
+        Index("ix_video_evidence_video_time", "video_id", "start_ms", "id"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
+    video_id: Mapped[int] = mapped_column(
+        ForeignKey("videos.id", ondelete="RESTRICT"), nullable=False
+    )
+    start_ms: Mapped[int] = mapped_column(Integer, nullable=False)
+    end_ms: Mapped[int] = mapped_column(Integer, nullable=False)
+    description: Mapped[str] = mapped_column(String(1000), nullable=False)
+    related_tactical_issue: Mapped[str | None] = mapped_column(String(500), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+    video: Mapped[Video] = relationship(back_populates="evidence")

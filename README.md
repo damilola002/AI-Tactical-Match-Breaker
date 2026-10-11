@@ -4,7 +4,7 @@ A football tactical analysis project built incrementally for the Inside the Game
 
 ## Project status
 
-Phase 1 application skeleton: a React frontend calls a FastAPI backend, which checks its PostgreSQL connection.
+Phase 6A foundation: the application has its existing React/FastAPI/PostgreSQL features plus private local video storage metadata. HTTP upload, playback, annotations, and report links are planned for later Phase 6 steps.
 
 ## Structure
 
@@ -56,6 +56,10 @@ docker compose exec backend python -m pytest
 ```
 
 The migration creates the team, player, current availability, match, match-player, and match-event tables. The seed script can be run again without duplicating its demo records. The tests use a temporary in-memory database; the commands above use PostgreSQL for the migration, seed, and live API checks.
+
+## Phase 6A video storage foundation
+
+Phase 6A adds database metadata and a private local storage helper only. It does not expose upload, video playback, or annotation endpoints yet. Docker Compose stores video files in the ignored host directory `./data/videos/`, mounted at `/app/data/videos` inside the backend container. Files persist across backend container recreation. If the Compose video-storage mount is introduced or changed, existing backend containers must be recreated to receive the mount and `VIDEO_STORAGE_PATH` setting; run `docker compose up --build -d backend`. This recreates only the backend service and preserves the PostgreSQL volume. Compose does not support custom storage paths. The storage directory and its parent must remain controlled by trusted processes and must not be group- or world-writable. The backend image currently runs as container root; treat it and any process with equivalent filesystem access as trusted. This deployment binds services to localhost and is not suitable for public exposure without authentication and additional hardening. It does not protect against a malicious host administrator, privileged container process, or another actor with equivalent filesystem control. Storage checks reject symlinked roots, writable-by-group/other roots, and non-private staging directories. New staging directories use mode `0700`, media files use mode `0600`, and existing host directories are never recursively chmodded or chowned. `MAX_VIDEO_UPLOAD_BYTES` defaults to 524288000 bytes and `VIDEO_ALLOWED_FORMATS` is `mp4,webm`. Video bytes are not stored in PostgreSQL or Git. Duplicate content is hashed but not automatically deduplicated in Phase 6A; each accepted stream receives a separate generated storage key. Promotion uses atomic no-overwrite hard links and fails closed if unavailable. Cleanup is diagnostic-only: candidate lists are advisory, never delete files, and are not run automatically at startup. Basic file signatures only identify an expected container format and do not prove that a video is safe or decodable.
 
 Available read-only endpoints include:
 

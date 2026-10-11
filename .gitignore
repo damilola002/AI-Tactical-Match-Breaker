@@ -20,9 +20,11 @@ build/
 
 # Local databases and generated data
 database/data/
+/data/videos/
 *.sqlite3
 *.db
 *.mp4
+*.webm
 *.mov
 *.mkv
 *.avi
