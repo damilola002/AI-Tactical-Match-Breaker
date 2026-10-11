@@ -34,6 +34,32 @@ export type PitchPosition = {
 
 export type PlayerPositions = Record<Side, Record<number, PitchPosition>>;
 
+export type AppPage = "planner" | "board" | "reports" | "players";
+
+export type PlayerProfileRoute = {
+  page: "players";
+  playerId: number | null;
+};
+
+export type SnapshotPlayer = {
+  id: number;
+  name: string;
+  position: string;
+  availability: AvailabilityStatus;
+  slotIndex: number;
+  slot: FormationSlot;
+  coordinates: PitchPosition;
+};
+
+export type TacticalScenarioSnapshot = {
+  scenarioKey: string;
+  capturedAt: string;
+  teams: Record<Side, Team>;
+  formationBySide: Record<Side, FormationName>;
+  slotsBySide: Record<Side, FormationSlot[]>;
+  playersBySide: Record<Side, SnapshotPlayer[]>;
+};
+
 export type HistoricalResultFilter = "all" | "win" | "draw" | "loss";
 
 export type HistoricalMetric = {
