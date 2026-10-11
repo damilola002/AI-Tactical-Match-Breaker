@@ -11,6 +11,10 @@ export type PlayerPerformanceSummary = {
   sprints: PlayerMetricAggregate;
 };
 
+export function playerInitials(name: string): string {
+  return name.trim().split(/\s+/).filter(Boolean).map((part) => part[0]).slice(0, 2).join("").toUpperCase();
+}
+
 export function summarizePlayerMeasurements(
   playerId: number,
   teamId: number,

@@ -1,4 +1,5 @@
 import { formatHistoricalMeasurement } from "../api/historicalAnalytics.ts";
+import { playerInitials } from "../analysis/playerProfile.ts";
 import type { Player, HistoricalMatch } from "../types.ts";
 import type { PlayerPerformanceSummary } from "../analysis/playerProfile.ts";
 
@@ -16,7 +17,7 @@ export default function PlayerProfileCard({ player, matches, summary, dataLabel 
   return (
     <article className="player-profile-card">
       <header className="player-profile-card-header">
-        <div className="player-monogram" aria-hidden="true">{player.name.split(/\s+/).map((part) => part[0]).slice(0, 2).join("")}</div>
+        <div className="player-monogram" aria-hidden="true">{playerInitials(player.name)}</div>
         <div><p className="pitch-kicker">{dataLabel}</p><h2>{player.name}</h2><p>{player.team.name}</p></div>
         <span className={`profile-availability status-${status}`}>{status}</span>
       </header>

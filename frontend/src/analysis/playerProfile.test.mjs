@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { summarizePlayerMeasurements } from "./playerProfile.ts";
+import { summarizePlayerMeasurements, playerInitials } from "./playerProfile.ts";
 
 function match(id, result, players) {
   return {
@@ -30,4 +30,10 @@ test("player averages show unavailable when measurements are missing", () => {
   ]);
   assert.deepEqual(summary.distance, { total: null, averagePerMeasuredAppearance: null, sampleCount: 0 });
   assert.deepEqual(summary.sprints, { total: null, averagePerMeasuredAppearance: null, sampleCount: 0 });
+});
+
+test("player initials provide a portrait-free fallback", () => {
+  assert.equal(playerInitials("Avery Fen"), "AF");
+  assert.equal(playerInitials("  Ellis  "), "E");
+  assert.equal(playerInitials(""), "");
 });

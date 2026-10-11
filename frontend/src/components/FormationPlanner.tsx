@@ -17,7 +17,7 @@ function TeamPlanner({ side, filter, onFilter, onOpenPlayer }: {
   side: Side;
   filter: Filter;
   onFilter: (value: Filter) => void;
-  onOpenPlayer: (playerId: number) => void;
+  onOpenPlayer: (playerId: number, opener?: HTMLElement) => void;
 }) {
   const { state, dispatch, selectTeam, selectedTeams, playersBySide } = useScenario();
   const team = selectedTeams[side];
@@ -70,7 +70,7 @@ function TeamPlanner({ side, filter, onFilter, onOpenPlayer }: {
             const assignedSlot = Object.entries(assignments).find(([, id]) => id === player.id)?.[0] ?? "";
             return (
               <div className="planner-player-row" key={player.id}>
-                <button type="button" className="planner-player-name" onClick={() => onOpenPlayer(player.id)}>
+                <button type="button" className="planner-player-name" onClick={(event) => onOpenPlayer(player.id, event.currentTarget)}>
                   <span className={`roster-status-dot status-${status}`} />
                   <span>{player.name}</span>
                   <small>{player.position} · {status}</small>
@@ -98,7 +98,7 @@ function TeamPlanner({ side, filter, onFilter, onOpenPlayer }: {
   );
 }
 
-export default function FormationPlanner({ onOpenPlayer }: { onOpenPlayer: (playerId: number) => void }) {
+export default function FormationPlanner({ onOpenPlayer }: { onOpenPlayer: (playerId: number, opener?: HTMLElement) => void }) {
   const { state, selectedTeams, playersBySide } = useScenario();
   const [filters, setFilters] = useState<Record<Side, Filter>>({ home: "all", away: "all" });
   const playersForSide = (side: Side) => {

@@ -3,6 +3,7 @@ import type { PointerEvent as ReactPointerEvent } from "react";
 import { buildTeamConnections } from "../analysis/teamConnections.ts";
 import { FORMATIONS, formationPosition } from "../analysis/formations.ts";
 import { getPitchDragBounds } from "../analysis/positionConstraints.ts";
+import { canDragPitchPlayer, canOpenPlayerAfterGesture, shouldOpenPlayerClick, startPitchGesture, updatePitchGesture, type PitchPointerGesture } from "../analysis/pitchActivation.ts";
 import { mapPlayerRole } from "../analysis/tacticalMetrics.ts";
 import TeamConnectionLines from "./TeamConnectionLines";
 import type { FormationName, FormationSlot, PitchPosition, Side, Team } from "../types.ts";
@@ -24,7 +25,7 @@ type Props = {
   playersBySide: Record<Side, PitchTokenPlayer[]>;
   mode: PitchMode;
   onPlayerMove?: (side: Side, playerId: number, position: PitchPosition) => void;
-  onOpenPlayer?: (playerId: number) => void;
+  onOpenPlayer?: (playerId: number, opener?: HTMLElement) => void;
 };
 
 function lineForSlot(slot: FormationSlot) {
@@ -33,6 +34,8 @@ function lineForSlot(slot: FormationSlot) {
 
 export default function TacticalPitch({ teams, formationBySide, playersBySide, mode, onPlayerMove, onOpenPlayer }: Props) {
   const pitchRef = useRef<HTMLDivElement>(null);
+  const gestureRef = useRef<PitchPointerGesture | null>(null);
+  const pointerClickAllowed = useRef(false);
   const [dragging, setDragging] = useState<string | null>(null);
   const assignments = useMemo(() => ({
     home: Object.fromEntries(playersBySide.home.map((player) => [player.slotIndex, player.id])),
@@ -58,12 +61,13 @@ export default function TacticalPitch({ teams, formationBySide, playersBySide, m
     onPlayerMove(side, player.id, { x, y });
   };
 
-  const beginDrag = (side: Side, player: PitchTokenPlayer, event: ReactPointerEvent<HTMLButtonElement>) => {
-    if (mode !== "live" || mapPlayerRole(player.position) === "goalkeeper" || event.button !== 0) return;
-    event.preventDefault();
-    setDragging(`${side}:${player.id}`);
-    event.currentTarget.setPointerCapture(event.pointerId);
-    moveAtPointer(side, player, event);
+  const beginDrag = (player: PitchTokenPlayer, event: ReactPointerEvent<HTMLButtonElement>) => {
+    if (event.button !== 0) return;
+    pointerClickAllowed.current = false;
+    gestureRef.current = startPitchGesture(event.pointerId, event.clientX, event.clientY);
+    if (canDragPitchPlayer(mode, mapPlayerRole(player.position) === "goalkeeper", Boolean(onPlayerMove))) {
+      event.currentTarget.setPointerCapture(event.pointerId);
+    }
   };
 
   return (
@@ -122,17 +126,34 @@ export default function TacticalPitch({ teams, formationBySide, playersBySide, m
                   className="player-token"
                   aria-label={`${teams[side].name}: ${player.name}, ${player.position}, ${player.availability}${fixedGoalkeeper && mode === "live" ? ", fixed goalkeeper" : ""}`}
                   title={`${player.name} · ${player.position} · ${player.availability}`}
-                  onPointerDown={(event) => beginDrag(side, player, event)}
+                  onPointerDown={(event) => beginDrag(player, event)}
                   onPointerMove={(event) => {
-                    if (event.currentTarget.hasPointerCapture(event.pointerId)) moveAtPointer(side, player, event);
+                    const gesture = gestureRef.current;
+                    if (!gesture || gesture.pointerId !== event.pointerId) return;
+                    const updated = updatePitchGesture(gesture, event.clientX, event.clientY);
+                    gestureRef.current = updated;
+                    if (!updated.moved || updated.cancelled || !canDragPitchPlayer(mode, fixedGoalkeeper, Boolean(onPlayerMove))) return;
+                    setDragging(tokenKey);
+                    moveAtPointer(side, player, event);
                   }}
                   onPointerUp={(event) => {
                     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+                    const gesture = gestureRef.current;
+                    pointerClickAllowed.current = Boolean(gesture && gesture.pointerId === event.pointerId && canOpenPlayerAfterGesture(gesture));
+                    gestureRef.current = null;
                     setDragging(null);
                   }}
                   onPointerCancel={(event) => {
                     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+                    if (gestureRef.current?.pointerId === event.pointerId) gestureRef.current = null;
+                    pointerClickAllowed.current = false;
                     setDragging(null);
+                  }}
+                  onClick={(event) => {
+                    const shouldOpen = shouldOpenPlayerClick(event.detail, pointerClickAllowed.current);
+                    pointerClickAllowed.current = false;
+                    if (!shouldOpen) return;
+                    onOpenPlayer?.(player.id, event.currentTarget);
                   }}
                 >
                   {player.name.split(/\s+/).map((part) => part[0]).slice(0, 2).join("")}
@@ -143,7 +164,7 @@ export default function TacticalPitch({ teams, formationBySide, playersBySide, m
                   <span className="player-card-meta">{player.name}</span>
                   <span className={`availability-chip status-${player.availability}`}>{player.availability}</span>
                   {fixedGoalkeeper && mode === "live" && <span className="keeper-lock-label">FIXED</span>}
-                  {onOpenPlayer && <button className="player-profile-link" type="button" onPointerDown={(event) => event.stopPropagation()} onClick={() => onOpenPlayer(player.id)}>View profile</button>}
+                  {onOpenPlayer && <button className="player-profile-link" type="button" onPointerDown={(event) => event.stopPropagation()} onClick={(event) => onOpenPlayer(player.id, event.currentTarget)}>View profile</button>}
                 </div>
               </div>,
             ];

@@ -1,48 +1,32 @@
 import { useEffect, useState } from "react";
-import { summarizePlayerMeasurements } from "../analysis/playerProfile.ts";
-import { loadPlayer, loadPlayerMatchHistory, loadPlayers, type PlayerMatchHistoryResponse } from "../api/playerProfile.ts";
+import { usePlayerProfileData } from "../hooks/usePlayerProfileData.ts";
+import { loadPlayers } from "../api/playerProfile.ts";
 import type { Player } from "../types.ts";
 import PlayerProfileCard from "./PlayerProfileCard";
 
 export default function PlayerProfilesPage({ playerId, onClose }: { playerId: number | null; onClose: () => void }) {
   const [directory, setDirectory] = useState<Player[]>([]);
   const [directoryLabel, setDirectoryLabel] = useState("DEMO DATA");
-  const [player, setPlayer] = useState<Player | null>(null);
-  const [history, setHistory] = useState<PlayerMatchHistoryResponse | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const profile = usePlayerProfileData(playerId);
+  const [directoryLoading, setDirectoryLoading] = useState(true);
+  const [directoryError, setDirectoryError] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
-    setLoading(true);
-    setError(null);
     if (playerId === null) {
       loadPlayers().then((response) => {
         if (!active) return;
         setDirectory(response.items);
         setDirectoryLabel(response.data_label);
       }).catch((cause: unknown) => {
-        if (active) setError(cause instanceof Error ? cause.message : "Could not load players.");
-      }).finally(() => { if (active) setLoading(false); });
-    } else {
-      setPlayer(null);
-      setHistory(null);
-      loadPlayer(playerId).then(async (response) => {
-        const matches = await loadPlayerMatchHistory(response.item.team.id);
-        if (!active) return;
-        setPlayer(response.item);
-        setHistory(matches);
-        setDirectoryLabel(response.data_label);
-      }).catch((cause: unknown) => {
-        if (active) setError(cause instanceof Error ? cause.message : "Could not load player profile.");
-      }).finally(() => { if (active) setLoading(false); });
+        if (active) setDirectoryError(cause instanceof Error ? cause.message : "Could not load players.");
+      }).finally(() => { if (active) setDirectoryLoading(false); });
     }
     return () => { active = false; };
   }, [playerId]);
 
-  const summary = player && history
-    ? summarizePlayerMeasurements(player.id, player.team.id, history.items)
-    : null;
+  const loading = playerId === null ? directoryLoading : profile.loading;
+  const error = playerId === null ? directoryError : profile.error;
 
   return (
     <main className="page-content player-profiles-page">
@@ -54,11 +38,11 @@ export default function PlayerProfilesPage({ playerId, onClose }: { playerId: nu
           {directory.map((item) => <a className="player-directory-link" key={item.id} href={`#/players/${item.id}`}><span>{item.name}</span><small>{item.team.name} · {item.position} · {item.availability?.status ?? "active"}</small></a>)}
         </section>
       )}
-      {player && history && summary && <>
+      {profile.player && profile.history && profile.summary && <>
         <button className="profile-back-button" type="button" onClick={onClose}>← Back to previous page</button>
-        <PlayerProfileCard player={player} matches={history.items} summary={summary} dataLabel={history.data_label || directoryLabel} />
+        <PlayerProfileCard player={profile.player} matches={profile.history.items} summary={profile.summary} dataLabel={profile.history.data_label || directoryLabel} />
       </>}
-      {!loading && !error && playerId !== null && !player && <p className="history-state">Player not found.</p>}
+      {!loading && !error && playerId !== null && !profile.player && <p className="history-state">Player not found.</p>}
     </main>
   );
 }

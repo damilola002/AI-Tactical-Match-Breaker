@@ -8,7 +8,7 @@ import { useScenario } from "../state/ScenarioProvider.tsx";
 import type { PitchTokenPlayer } from "./TacticalPitch";
 import type { Side } from "../types.ts";
 
-export default function TacticalBoard({ onOpenPlayer }: { onOpenPlayer: (playerId: number) => void }) {
+export default function TacticalBoard({ onOpenPlayer }: { onOpenPlayer: (playerId: number, opener?: HTMLElement) => void }) {
   const { state, selectedTeams, playersBySide, dispatch, generateReport } = useScenario();
   const playersForSide = (side: Side): PitchTokenPlayer[] => {
     const roster = new Map(playersBySide[side].map((player) => [player.id, player]));

@@ -1,8 +1,9 @@
 import HistoricalAnalytics from "./HistoricalAnalytics";
 import TacticalReport from "./TacticalReport";
 import { useScenario } from "../state/ScenarioProvider.tsx";
+import type { StoredTacticalReport } from "../state/scenarioState.ts";
 
-export default function ReportsPage({ onOpenPlayer }: { onOpenPlayer: (playerId: number) => void }) {
+export default function ReportsPage({ onOpenPlayer }: { onOpenPlayer: (playerId: number, report: StoredTacticalReport, opener?: HTMLElement) => void }) {
   const { state, reportIsPrevious } = useScenario();
   const stored = state.latestReport;
   return (
@@ -11,12 +12,13 @@ export default function ReportsPage({ onOpenPlayer }: { onOpenPlayer: (playerId:
       {state.reportError && <p className="report-state report-state--error" role="alert">{state.reportError}</p>}
       {stored ? (
         <>
-          <TacticalReport report={stored.response} snapshot={stored.snapshot} isPrevious={reportIsPrevious} onOpenPlayer={onOpenPlayer} />
-          <section className="historical-analytics-group" aria-label="Historical team analytics">
-            <div className="page-section-heading"><span className="pitch-kicker">PHASE 4 · STORED MATCHES</span><h2>Historical team analytics</h2><p>These measurements describe recorded demo matches, not the captured tactical board.</p></div>
+          <TacticalReport report={stored.response} snapshot={stored.snapshot} isPrevious={reportIsPrevious} onOpenPlayer={(playerId, opener) => onOpenPlayer(playerId, stored, opener)} />
+          <details className="historical-analytics-group report-detail-section">
+            <summary>Historical performance context · stored demo matches</summary>
+            <div className="page-section-heading"><h2>Historical team analytics</h2><p>These measurements describe recorded demo matches, not the captured tactical board.</p></div>
             <HistoricalAnalytics team={stored.snapshot.teams.home} />
             <HistoricalAnalytics team={stored.snapshot.teams.away} />
-          </section>
+          </details>
         </>
       ) : (
         <section className="reports-empty-state">

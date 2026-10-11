@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AppNavigation from "./components/AppNavigation";
 import FormationPlanner from "./components/FormationPlanner";
 import ReportsPage from "./components/ReportsPage";
 import TacticalBoard from "./components/TacticalBoard";
 import PlayerProfilesPage from "./components/PlayerProfilesPage";
+import PlayerCardDialog from "./components/PlayerCardDialog";
 import { ScenarioProvider, useScenario } from "./state/ScenarioProvider.tsx";
+import type { StoredTacticalReport } from "./state/scenarioState.ts";
 import { useHashRoute } from "./state/hashRouter.ts";
 import type { Team } from "./types.ts";
 
@@ -13,7 +15,9 @@ type TeamResponse = { data_label: string; count: number; items: Team[] };
 
 function RoutedApplication({ health, dataLabel }: { health: HealthResponse | null; dataLabel: string }) {
   const { route, navigate } = useHashRoute();
-  const { state, dispatch } = useScenario();
+  const { state, dispatch, currentSnapshot } = useScenario();
+  const [popup, setPopup] = useState<{ playerId: number; source: "planner" | "board" | "report"; report: StoredTacticalReport | null } | null>(null);
+  const popupOpener = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (route.page === "players" && route.playerId !== null && state.selectedPlayerId !== route.playerId) {
@@ -23,9 +27,13 @@ function RoutedApplication({ health, dataLabel }: { health: HealthResponse | nul
     }
   }, [route, state.selectedPlayerId, dispatch]);
 
-  const openPlayer = (playerId: number) => {
-    dispatch({ type: "PLAYER_PROFILE_OPENED", playerId, returnHash: route.page === "players" ? state.profileReturnHash : route.hash });
-    navigate(`#/players/${playerId}`);
+  const openPlayer = (playerId: number, source: "planner" | "board" | "report", report = state.latestReport, opener?: HTMLElement) => {
+    popupOpener.current = opener ?? (document.activeElement instanceof HTMLElement ? document.activeElement : null);
+    setPopup({ playerId, source, report });
+  };
+  const closePopup = () => {
+    setPopup(null);
+    requestAnimationFrame(() => popupOpener.current?.focus({ preventScroll: true }));
   };
   const closePlayer = () => {
     const destination = state.profileReturnHash || "#/planner";
@@ -41,10 +49,17 @@ function RoutedApplication({ health, dataLabel }: { health: HealthResponse | nul
       </header>
       <AppNavigation activePage={route.page} />
       <div className="global-data-label"><span className="stamp-icon" aria-hidden="true">✳</span>{dataLabel}</div>
-      {route.page === "planner" && <FormationPlanner onOpenPlayer={openPlayer} />}
-      {route.page === "board" && <TacticalBoard onOpenPlayer={openPlayer} />}
-      {route.page === "reports" && <ReportsPage onOpenPlayer={openPlayer} />}
+      {route.page === "planner" && <FormationPlanner onOpenPlayer={(id, opener) => openPlayer(id, "planner", state.latestReport, opener)} />}
+      {route.page === "board" && <TacticalBoard onOpenPlayer={(id, opener) => openPlayer(id, "board", state.latestReport, opener)} />}
+      {route.page === "reports" && <ReportsPage onOpenPlayer={(id, report, opener) => openPlayer(id, "report", report, opener)} />}
       {route.page === "players" && <PlayerProfilesPage playerId={route.playerId} onClose={closePlayer} />}
+      {popup && <PlayerCardDialog
+        playerId={popup.playerId}
+        source={popup.source}
+        report={popup.report}
+        reportIsPrevious={Boolean(popup.report && popup.report.snapshot.scenarioKey !== currentSnapshot.scenarioKey)}
+        onClose={closePopup}
+      />}
       <footer className="page-footer"><span>TOUCHLINE TACTICAL LAB</span><span>DEMO DATA <i>·</i> PHASE 5.5</span></footer>
     </main>
   );
